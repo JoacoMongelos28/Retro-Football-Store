@@ -1,0 +1,17 @@
+.contenedor-principal {
+    width: 80%;
+    margin: auto;
+    padding-top: 120px;
+}
+
+.contenedor-camisetas {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 20px 0;
+}
+
+img {
+    width: 200px;
+    height: 200px;
+}

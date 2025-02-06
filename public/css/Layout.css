@@ -1,0 +1,162 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 400;
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #00060c;
+    color: #ffffff;
+    font-weight: 400;
+}
+
+.contenedor-nav {
+    align-items: center;
+    background-color: #21212150;
+    display: flex;
+    justify-content: space-between;
+    padding: 1.8rem 7rem 1.8rem 6.2rem;
+    position: fixed;
+    width: 100vw;
+    z-index: 1000;
+}
+
+.logo-txt {
+    text-decoration: none;
+}
+
+.joaquin {
+    color: rgb(210 84 117);
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.mongelos {
+    color: rgb(80 89 223);
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.contenedor-menu-nav {
+    gap: 1.8rem;
+    display: flex;
+    align-items: center;
+}
+
+.menu-a {
+    color: #ffffff;
+}
+
+.cv-a-txt {
+    background-color: rgb(232 41 91);
+    color: #ffffff;
+    border-radius: 2rem;
+    cursor: pointer;
+    padding: .7rem 4rem !important;
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.carrito {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.footer {
+    background-color: #21212150;    margin-top: 15rem;
+}
+
+.contenedor-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1rem 8rem;
+    margin-top: 6rem;
+}
+
+.contenedor-principal-redes {
+    display: flex;
+    justify-content: center;
+}
+
+.contenedor-redes {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.linkedin, .github, .email {
+    text-decoration: none;
+    color: inherit;
+    font-size: 2rem;
+}
+
+@media screen and (max-width: 1100px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .contenedor-menu-nav {
+        flex-direction: column;
+        background-color: #212121;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 100%;
+        padding: 1rem;
+        opacity: 0;
+        transform: translateY(-20px);
+        visibility: hidden;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .contenedor-menu-nav.active {
+        opacity: 1;
+        transform: translateY(0);
+        visibility: visible;
+        background-color: #212121f0;
+    }
+
+    .contenedor-nav {
+        padding: 1rem 2rem;
+    }
+
+    .joaquin {
+        font-size: 14px;
+    }
+
+    .mongelos {
+        font-size: 14px;
+    }
+
+    .footer {
+        margin-top: 7rem;
+    }
+
+    .contenedor-footer {
+        display: block;
+        margin: 0;
+        padding: 0;
+    }
+
+    .contenedor-full-nombre {
+        text-align: center;
+    }
+
+    .contenedor-principal-redes {
+        margin-top: 10px;
+    }
+}

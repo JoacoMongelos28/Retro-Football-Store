@@ -1,0 +1,43 @@
+.contenedor-principal {
+    width: 60%;
+    margin: auto;
+    padding-top: 120px;
+}
+
+img {
+    width: 300px;
+}
+
+.contenedor-camiseta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.otros-productos-txt {
+    text-align: center;
+    margin-top: 150px;
+    margin-bottom: 50px;
+}
+
+.slider-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.slider-prev,
+.slider-next {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+    transform: translateY(-50%);
+}
+
+.camisetas-oferta {
+    width: 200px;
+    height: 200px;
+}
