@@ -23,7 +23,21 @@
                     <h3>{{ $camisetaObtenida->nombre }}</h3>
                     <p>{{ $camisetaObtenida->descripcion }}</p>
                     <p id="precio">{{ $camisetaObtenida->precio }}</p>
+
+                    <select name="talle" id="talle">
+                        <option value="">Selecciona un talle</option>
+                        <option value="stock_talle_xs">XS</option>
+                        <option value="stock_talle_s">S</option>
+                        <option value="stock_talle_m">M</option>
+                        <option value="stock_talle_l">L</option>
+                        <option value="stock_talle_xl">XL</option>
+                        <option value="stock_talle_xxl">XXL</option>
+                    </select>
+                    <input type="number" name="cantidad" id="cantidad" style="display: none;"
+                        placeholder="Cantidad de camisetas">
+
                     <button class="btn-agregar" data-id="{{ $camisetaObtenida->id }}">🛒 Agregar al carrito</button>
+                    <p id="mensaje-error"></p>
                 </article>
             </section>
         </div>
@@ -56,6 +70,7 @@
 </main>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script src="{{ asset('js/ver.js') }}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -64,8 +79,8 @@
         botonesAgregar.forEach(boton => {
             boton.addEventListener("click", function() {
                 const camisetaId = boton.getAttribute("data-id");
-                const cantidad = 1;
-                const idUsuario = 1;
+                const cantidad = document.getElementById("cantidad").value;
+                const talle = document.getElementById("talle").value;
 
                 $.ajax({
                     url: '/agregar',
@@ -73,7 +88,7 @@
                     data: {
                         id: camisetaId,
                         cantidad: cantidad,
-                        idUsuario: idUsuario,
+                        talle: talle,
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
@@ -81,21 +96,48 @@
                             response.carrito.cantidad;
                         document.querySelector(".carrito p").textContent =
                             `$${response.carrito.total}`;
+                        mostrarMensajeExitoso("Camiseta agregada al carrito correctamente");
                     },
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    },
-                    error: function(error) {
-                        if (error.status === 401) {
-                            window.location.href = '/login';
-                        } else {
-                            alert(
-                                "Ocurrió un error al agregar al carrito. Por favor, inténtalo de nuevo más tarde.");
-                        }
+                    }
+                }).fail(function(xhr) {
+                    if (xhr.status === 401) {
+                        window.location.href = '/login';
+                    } else {
+                        let response = JSON.parse(xhr.responseText);
+                        mostrarMensajeError(response.error);
+                        console.clear();
                     }
                 });
             });
         });
+
+        function mostrarMensajeError(mensaje) {
+            let mensajeError = document.getElementById("mensaje-error");
+            mensajeError.style.color = "red";
+            mensajeError.style.fontWeight = "bold";
+            mensajeError.style.marginTop = "10px";
+            mensajeError.textContent = mensaje;
+        }
+
+        function mostrarMensajeExitoso(mensaje) {
+            let mensajeError = document.getElementById("mensaje-error");
+            mensajeError.style.color = "green";
+            mensajeError.style.fontWeight = "bold";
+            mensajeError.style.marginTop = "10px";
+            mensajeError.textContent = mensaje;
+        }
+    });
+
+    document.getElementById("talle").addEventListener("change", function() {
+        const talle = this.value;
+
+        if (talle) {
+            document.getElementById("cantidad").style.display = "block";
+        } else {
+            document.getElementById("cantidad").style.display = "none";
+        }
     });
 </script>
 

@@ -6,19 +6,23 @@ use Illuminate\Http\Request;
 use App\Models\CarritoModel;
 use App\Models\CarritoProductoModel;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use App\Models\MercadoPagoModel;
+use App\Models\HomeModel;
 
 class CarritoController extends Controller
 {
     private $carritoModel;
     private $carritoProductoModel;
     private $mercadoPagoModel;
+    private $homeModel;
 
-    public function __construct(CarritoModel $carritoModel, CarritoProductoModel $carritoProductoModel, MercadoPagoModel $mercadoPagoModel)
+    public function __construct(CarritoModel $carritoModel, CarritoProductoModel $carritoProductoModel, MercadoPagoModel $mercadoPagoModel, HomeModel $homeModel)
     {
         $this->carritoModel = $carritoModel;
         $this->carritoProductoModel = $carritoProductoModel;
         $this->mercadoPagoModel = $mercadoPagoModel;
+        $this->homeModel = $homeModel;
     }
 
     public function agregarAlCarrito(Request $request)
@@ -29,9 +33,29 @@ class CarritoController extends Controller
 
             $carritoObtenido = $this->carritoModel->crearCarrito($idUsuario);
 
-            $camisetaId = $request->input('id');
+            $talle = $request->input('talle');
+
+            Log::info('Talle: ' . $talle);
+
             $cantidad = $request->input('cantidad');
-            $carritoObtenido = $this->carritoProductoModel->agregarCamisetasAlCarrito($carritoObtenido->id, $camisetaId, $cantidad);
+
+            $validator = Validator::make($request->all(), [
+                'talle' => 'required',
+                'cantidad' => 'required|numeric|min:1',
+            ], [
+                'talle.required' => 'Debe seleccionar un talle antes de agregar al carrito.',
+                'cantidad.required' => 'Debe ingresar una cantidad.',
+                'cantidad.numeric' => 'La cantidad debe ser un número.',
+                'cantidad.min' => 'Debe agregar al menos una unidad.',
+            ]);
+        
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()->first()], 400);
+            }
+
+            $camisetaId = $request->input('id');
+
+            $carritoObtenido = $this->carritoProductoModel->agregarCamisetasAlCarrito($carritoObtenido->id, $camisetaId, $cantidad, $talle);
 
             $carritoJoineado = $this->carritoProductoModel->joinearCarrito($carritoObtenido);
 
@@ -166,13 +190,17 @@ class CarritoController extends Controller
         }
 
         $url = $this->mercadoPagoModel->pagarCamiseta($total, $usuarioId);
-
         return redirect($url);
     }
 
     public function pagoExitoso()
     {
         $usuarioId = session('usuarioId');
+        $carrito = $this->carritoModel->obtenerCarrito($usuarioId);
+        $carritoJoineado = $this->carritoModel->joinearCarritoPorSuId($carrito->id);
+        $carritoFinal = $this->carritoProductoModel->obtenerCamisetasAEliminar($carritoJoineado->first());
+        
+        $this->homeModel->actualizarStock($carritoFinal);
         $this->carritoModel->eliminarCarritoPorIdUsuario($usuarioId);
 
         return redirect('carrito')->with('exitoso', 'Pago exitoso');

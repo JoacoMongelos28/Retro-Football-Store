@@ -14,7 +14,7 @@
     <header>
         <nav>
             <div class="contenedor-nav">
-                <a href="admin" class="logo-txt">
+                <a href="/admin" class="logo-txt">
                     <span class="joaquin">Joaquin</span><span class="mongelos">Mongelos</span>
                 </a>
                 <button class="menu-toggle" aria-label="Toggle menu">

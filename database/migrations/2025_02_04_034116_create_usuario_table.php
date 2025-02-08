@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -37,6 +38,7 @@ return new class extends Migration
             $table->unsignedBigInteger('carrito_id');
             $table->unsignedBigInteger('camiseta_id');
             $table->integer('cantidad');
+            $table->string('talle');
             $table->foreign('carrito_id')->references('id')->on('carrito')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('camiseta_id')->references('id')->on('camiseta')->onDelete('cascade')->onUpdate('cascade');
         });
@@ -47,9 +49,13 @@ return new class extends Migration
      */
     public function down(): void
     {
+        DB::statement('SET foreign_key_checks = 0;');
+
         Schema::dropIfExists('usuario');
         Schema::dropIfExists('tipo_usuario');
         Schema::dropIfExists('carrito');
         Schema::dropIfExists('carrito_camiseta');
+
+        DB::statement('SET foreign_key_checks = 1;');
     }
 };
