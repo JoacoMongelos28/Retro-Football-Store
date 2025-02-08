@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
 class HomeModel extends Model
 {
     protected $table = 'camiseta';
+    public $timestamps = false;
 
     public function obtenerCamisetasDestacadas()
     {
@@ -80,5 +83,41 @@ class HomeModel extends Model
                 }
                 return $camiseta;
             });
+    }
+
+    public function actualizarStock($carrito)
+    {
+        foreach ($carrito as $camiseta) {
+            $camisetaModel = $this->find($camiseta->id);
+
+            if ($camiseta->talle === 'stock_talle_s') {
+                $camisetaModel->stock_talle_s -= $camiseta->cantidad;
+                $camisetaModel->save();
+                return true;
+            } else if ($camiseta->talle === 'stock_talle_m') {
+                $camisetaModel->stock_talle_m -= $camiseta->cantidad;
+                $camisetaModel->save();
+                return true;
+            } else if ($camiseta->talle === 'stock_talle_l') {
+                $camisetaModel->stock_talle_l -= $camiseta->cantidad;
+                $camisetaModel->save();
+                return true;
+            } else if ($camiseta->talle === 'stock_talle_xl') {
+                $camisetaModel->stock_talle_xl -= $camiseta->cantidad;
+                $camisetaModel->save();
+                return true;
+            } else if ($camiseta->talle === 'stock_talle_xxl') {
+                $camisetaModel->stock_talle_xxl -= $camiseta->cantidad;
+                $camisetaModel->save();
+                return true;
+            } else if ($camiseta->talle === 'stock_talle_xs') {
+                $camisetaModel->stock_talle_xxxl -= $camiseta->cantidad;
+                $camisetaModel->save();
+                return true;
+            } else {
+                return false;
+            }
+            return false;
+        }
     }
 }

@@ -24,6 +24,12 @@ return new class extends Migration
             $table->string('nombre');
             $table->text('descripcion');
             $table->integer('precio');
+            $table->integer('stock_talle_s');
+            $table->integer('stock_talle_m');
+            $table->integer('stock_talle_l');
+            $table->integer('stock_talle_xl');
+            $table->integer('stock_talle_xxl');
+            $table->integer('stock_talle_xs');
             $table->unsignedBigInteger('estado');
             $table->foreign('estado')->references('id')->on('tipo_estado')->onDelete('cascade')->onUpdate('cascade');
         });

@@ -39,7 +39,6 @@
                         <p>{{ $camiseta->nombre }}</p>
                         Ver</a>
                         <p id="precio">{{ $camiseta->precio }}</p>
-                        <button class="btn-agregar" data-id="{{ $camiseta->id }}">🛒 Agregar al carrito</button>
                     </article>
                 @endforeach
             @endif
@@ -62,7 +61,6 @@
                     <p>{{ $camiseta->nombre }}</p>
                     Ver</a>
                     <p id="precio">{{ $camiseta->precio }}</p>
-                    <button class="btn-agregar" data-id="{{ $camiseta->id }}">🛒 Agregar al carrito</button>
                 </article>
             @endforeach
 
@@ -72,46 +70,5 @@
 </main>
 
 <script src="{{ asset('js/home.js') }}"></script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const botonesAgregar = document.querySelectorAll(".btn-agregar");
-
-        botonesAgregar.forEach(boton => {
-            boton.addEventListener("click", function() {
-                const camisetaId = boton.getAttribute("data-id");
-                const cantidad = 1;
-
-                $.ajax({
-                    url: '/agregar',
-                    method: 'POST',
-                    data: {
-                        id: camisetaId,
-                        cantidad: cantidad,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        document.querySelector(".carrito span").textContent =
-                            response.carrito.cantidad;
-                        document.querySelector(".carrito p").textContent =
-                            `$${response.carrito.total}`;
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    },
-                    error: function(error) {
-                        if (error.status === 401) { // 401 es el código de estado para "No autorizado"
-                            window.location.href = '/login'; // Redirige al usuario a la página de login
-                        } else {
-                            alert("Ocurrió un error al agregar al carrito. Por favor, inténtalo de nuevo más tarde.");
-                        }
-                    }
-                });
-            });
-        });
-    });
-</script>
 
 <x-footer></x-footer>

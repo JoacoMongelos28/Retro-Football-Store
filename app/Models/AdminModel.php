@@ -9,7 +9,7 @@ class AdminModel extends Model
     protected $table = 'camiseta';
     public $timestamps = false;
 
-    public function guardarCamiseta($nombre, $descripcion, $precio, $estado, $imagen) {
+    public function guardarCamiseta($nombre, $descripcion, $precio, $estado, $imagen, $cantidadXS, $cantidadS, $cantidadM, $cantidadL, $cantidadXL, $cantidadXXL) {
         $camiseta = new AdminModel();
 
         $camiseta->nombre = $nombre;
@@ -17,6 +17,12 @@ class AdminModel extends Model
         $camiseta->precio = $precio;
         $camiseta->estado = $estado;
         $camiseta->imagen = $imagen;
+        $camiseta->stock_talle_xs = $cantidadXS;
+        $camiseta->stock_talle_s = $cantidadS;
+        $camiseta->stock_talle_m = $cantidadM;
+        $camiseta->stock_talle_l = $cantidadL;
+        $camiseta->stock_talle_xl = $cantidadXL;
+        $camiseta->stock_talle_xxl = $cantidadXXL;
 
         return $camiseta->save();
     }
@@ -39,7 +45,7 @@ class AdminModel extends Model
         return AdminModel::find($id);
     }
 
-    public function actualizarCamiseta($id, $nombre, $descripcion, $precio, $estado, $imagen) {
+    public function actualizarCamiseta($id, $nombre, $descripcion, $precio, $estado, $imagen, $cantidadXS, $cantidadS, $cantidadM, $cantidadL, $cantidadXL, $cantidadXXL) {
         $camiseta = AdminModel::find($id);
 
         $camiseta->nombre = $nombre;
@@ -47,6 +53,12 @@ class AdminModel extends Model
         $camiseta->precio = $precio;
         $camiseta->estado = $estado;
         $camiseta->imagen = $imagen ?? $camiseta->imagen;
+        $camiseta->stock_talle_xs += $cantidadXS;
+        $camiseta->stock_talle_s += $cantidadS;
+        $camiseta->stock_talle_m += $cantidadM;
+        $camiseta->stock_talle_l += $cantidadL;
+        $camiseta->stock_talle_xl += $cantidadXL;
+        $camiseta->stock_talle_xxl += $cantidadXXL;
 
         return $camiseta->save();
     }
