@@ -7,6 +7,7 @@
         <div>
             <form action="registro/registrarUsuario" method="POST">
                 @csrf
+                <input type="hidden" name="redirect" id="redirect">
                 <div>
                     <label for="nombre">Nombre:</label>
                     <input type="text" id="nombre" name="nombre" required>
@@ -32,3 +33,10 @@
         </div>
     </div>
 </main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const redirectUrl = localStorage.getItem("url_previa") || "/home";
+        document.getElementById("redirect").value = redirectUrl;
+    });
+</script>

@@ -27,13 +27,13 @@ Route::post('admin/agregarCamiseta', [AdminController::class, 'guardarCamiseta']
 
 Route::get('admin/listado', [AdminController::class, 'listado']);
 
-Route::get('admin/editar/{id}', [AdminController::class, 'editar']);
+Route::get('admin/editar/{camiseta:slug}', [AdminController::class, 'editar']);
 
 Route::post('admin/editarCamiseta/{id}', [AdminController::class, 'editarCamiseta']);
 
 Route::get('admin/eliminar/{id}', [AdminController::class, 'eliminarCamiseta']);
 
-Route::get('home/camiseta/{id}', [HomeController::class, 'verCamiseta']);
+Route::get('home/camiseta/{camiseta:slug}', [HomeController::class, 'verCamiseta'])->name('verCamiseta');
 
 Route::post('agregar', [CarritoController::class, 'agregarAlCarrito']);
 

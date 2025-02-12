@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\CarritoModel;
 use App\Models\CarritoProductoModel;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\MercadoPagoModel;
 use App\Models\HomeModel;
+use App\Models\LoginModel;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class CarritoController extends Controller
 {
@@ -16,13 +18,15 @@ class CarritoController extends Controller
     private $carritoProductoModel;
     private $mercadoPagoModel;
     private $homeModel;
+    private $loginModel;
 
-    public function __construct(CarritoModel $carritoModel, CarritoProductoModel $carritoProductoModel, MercadoPagoModel $mercadoPagoModel, HomeModel $homeModel)
+    public function __construct(CarritoModel $carritoModel, CarritoProductoModel $carritoProductoModel, MercadoPagoModel $mercadoPagoModel, HomeModel $homeModel, LoginModel $loginModel)
     {
         $this->carritoModel = $carritoModel;
         $this->carritoProductoModel = $carritoProductoModel;
         $this->mercadoPagoModel = $mercadoPagoModel;
         $this->homeModel = $homeModel;
+        $this->loginModel = $loginModel;
     }
 
     public function agregarAlCarrito(Request $request)
@@ -35,8 +39,6 @@ class CarritoController extends Controller
 
             $talle = $request->input('talle');
 
-            Log::info('Talle: ' . $talle);
-
             $cantidad = $request->input('cantidad');
 
             $validator = Validator::make($request->all(), [
@@ -48,7 +50,7 @@ class CarritoController extends Controller
                 'cantidad.numeric' => 'La cantidad debe ser un número.',
                 'cantidad.min' => 'Debe agregar al menos una unidad.',
             ]);
-        
+
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()->first()], 400);
             }
@@ -76,7 +78,10 @@ class CarritoController extends Controller
             ]);
         }
 
-        return response('No se pudo agregar el producto al carrito', 401);
+        return response()->json([
+            'error' => 'Debe iniciar sesión para agregar productos al carrito',
+            'redirect' => $request->input('url')
+        ], 401);
     }
 
     public function mostrarCarrito()
@@ -84,7 +89,7 @@ class CarritoController extends Controller
         if (!session('usuarioId')) {
             return redirect('login');
         }
-        
+
         $idUsuario = session('usuarioId');
         $carritoObtenido = $this->carritoModel->obtenerCarrito($idUsuario);
         $carritoJoineado = $this->carritoProductoModel->obtenerCamisetasDelCarrito($carritoObtenido);
@@ -196,12 +201,18 @@ class CarritoController extends Controller
     public function pagoExitoso()
     {
         $usuarioId = session('usuarioId');
+        $usuario = $this->loginModel->obtenerUsuarioPorId($usuarioId);
         $carrito = $this->carritoModel->obtenerCarrito($usuarioId);
         $carritoJoineado = $this->carritoModel->joinearCarritoPorSuId($carrito->id);
         $carritoFinal = $this->carritoProductoModel->obtenerCamisetasAEliminar($carritoJoineado->first());
-        
-        $this->homeModel->actualizarStock($carritoFinal);
-        $this->carritoModel->eliminarCarritoPorIdUsuario($usuarioId);
+
+        Log::info('Carrito final: ' . $carritoFinal);
+
+        if (!$carritoFinal->isEmpty()) {
+            $this->homeModel->actualizarStock($carritoFinal);
+            $this->homeModel->enviarMail($carritoFinal, $usuario->email);
+            $this->carritoModel->eliminarCarritoPorIdUsuario($usuarioId);
+        }
 
         return redirect('carrito')->with('exitoso', 'Pago exitoso');
     }

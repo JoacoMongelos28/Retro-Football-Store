@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Retro Football Store</title>
 </head>
+
 <body>
     <main>
         <div>
@@ -18,18 +20,20 @@
                     <p>
                         {{ session('exitoso') }}
                     </p>
-                @endif            
+                @endif
             </div>
             <form action="validar" method="post">
                 @csrf
+                <input type="hidden" name="redirect" id="redirect">
                 <div>
                     <label for="usuario">Nombre de usuario</label>
-                    <input type="text" name="usuario" id="usuario" placeholder="Nombre de usuario" value="{{ old('usuario') }}">
+                    <input type="text" name="usuario" id="usuario" placeholder="Nombre de usuario"
+                        value="{{ old('usuario') }}">
                     @error('usuario')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-                
+
                 <div>
                     <label for="contraseña">Contraseña</label>
                     <input type="password" name="contraseña" id="contraseña" placeholder="Contraseña">
@@ -37,7 +41,7 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-                
+
                 <div>
                     <input type="submit" value="Ingresar" name="login">
                 </div>
@@ -46,7 +50,7 @@
                         <p>
                             {{ session('error') }}
                         </p>
-                    @endif            
+                    @endif
                 </div>
                 <div>
                     <a href="/registro">Registrarse</a>
@@ -58,4 +62,16 @@
         </div>
     </main>
 </body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const redirectUrl = localStorage.getItem("url_previa") || "/home";
+        document.getElementById("redirect").value = redirectUrl;
+
+        document.querySelector("form").addEventListener("submit", function() {
+            localStorage.removeItem("url_previa");
+        });
+    });
+</script>
+
 </html>

@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\AdminModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\LoginModel;
-use Illuminate\Support\Facades\Log;
+use App\Http\Requests\AgregarCamisetaRequest;
+use App\Http\Requests\EditarCamisetaRequest;
 
 class AdminController extends Controller
 {
@@ -54,12 +54,10 @@ class AdminController extends Controller
         return view("AgregarCamiseta");
     }
 
-    public function guardarCamiseta(Request $request)
+    public function guardarCamiseta(AgregarCamisetaRequest $request)
     {
-        $data = $this->validarCamiseta($request);
-
-        if ($data->fails()) {
-            return redirect('admin/agregar')->withErrors($data)->withInput();
+        if ($request->fails()) {
+            return redirect('admin/agregar')->withErrors($request)->withInput();
         }
 
         if ($request->hasFile('imagen') && $request->file('imagen')->isValid()) {
@@ -95,9 +93,8 @@ class AdminController extends Controller
         return view("AdminListado", $data);
     }
 
-    public function editar($id)
+    public function editar(AdminModel $camiseta)
     {
-
         $usuarioId = session('usuarioId');
 
         if ($usuarioId == null || $usuarioId <= 0) {
@@ -110,11 +107,11 @@ class AdminController extends Controller
             return redirect('home');
         }
 
-        if (!is_numeric($id) || $id <= 0) {
+        if (!is_numeric($camiseta->id) || $camiseta->id <= 0) {
             return redirect('admin/listado')->with('error', 'El id de la camiseta no es válido.');
         }
 
-        $camisetaObtenida = $this->adminModel->obtenerCamisetaPorId($id);
+        $camisetaObtenida = $this->adminModel->obtenerCamisetaPorId($camiseta->id);
 
         if ($camisetaObtenida != null) {
             $data['estado_destacado'] = $camisetaObtenida['estado'] == 1 ? 'selected' : '';
@@ -127,32 +124,9 @@ class AdminController extends Controller
         return view("EditarCamiseta", $data);
     }
 
-    public function editarCamiseta(Request $request, $id)
+    public function editarCamiseta(EditarCamisetaRequest $request, $id)
     {
-        $data = $this->validacionesParaEditarLaCamiseta($request);
-
-        if ($data->fails()) {
-            return redirect('admin/editar/' . $id)->withErrors($data)->withInput();
-        }
-
-        $nombre = $request->nombre;
-        $descripcion = $request->descripcion;
-        $precio = $request->precio;
-        $estado = $request->estado;
-        $cantidadXS = $request->input('cantidadXS') ? $request->input('cantidadXS') : 0;
-        $cantidadS = $request->input('cantidadS') ? $request->input('cantidadS') : 0;
-        $cantidadM = $request->input('cantidadM') ? $request->input('cantidadM') : 0;
-        $cantidadL = $request->input('cantidadL') ? $request->input('cantidadL') : 0;
-        $cantidadXL = $request->input('cantidadXL') ? $request->input('cantidadXL') : 0;
-        $cantidadXXL = $request->filled('cantidadXXL') ? $request->input('cantidadXXL') : 0;
-
-        if ($request->hasFile('imagen') && $request->file('imagen')->isValid()) {
-            $imagen = file_get_contents($request->file('imagen')->getRealPath());
-        } else {
-            $imagen = null;
-        }
-
-        $resultado = $this->adminModel->actualizarCamiseta($id, $nombre, $descripcion, $precio, $estado, $imagen, $cantidadXS, $cantidadS, $cantidadM, $cantidadL, $cantidadXL, $cantidadXXL);
+        $resultado = $this->edicion($request, $id);
 
         if ($resultado) {
             return redirect('admin/listado')->with('exitoso', 'La camiseta se editó correctamente!');
@@ -188,31 +162,6 @@ class AdminController extends Controller
         }
     }
 
-    private function validarCamiseta(Request $request)
-    {
-        return Validator::make($request->all(), [
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'required|string',
-            'precio' => 'required|numeric',
-            'estado' => 'required|integer',
-            'imagen' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'cantidadXS' => 'nullable|integer|min:0',
-            'cantidadS' => 'nullable|integer|min:0',
-            'cantidadM' => 'nullable|integer|min:0',
-            'cantidadL' => 'nullable|integer|min:0',
-            'cantidadXL' => 'nullable|integer|min:0',
-            'cantidadXXL' => 'nullable|integer|min:0'
-        ], [
-            'imagen.required' => 'No subiste ninguna imagen. Por favor, selecciona una imagen.',
-            'imagen.image' => 'El archivo que subiste no es una imagen. Por favor, selecciona una imagen válida (JPEG, PNG o JPG).',
-            'imagen.mimes' => 'La imagen debe ser de tipo JPEG, PNG o JPG.',
-            'imagen.max' => 'La imagen no puede ser mayor a 2MB. Por favor, sube una imagen más pequeña.',
-            'nombre.required' => 'El nombre de la camiseta es requerido.',
-            'descripcion.required' => 'La descripción de la camiseta es requerida.',
-            'precio.required' => 'El precio de la camiseta es requerido.'
-        ]);
-    }
-
     private function guardar(Request $request)
     {
         $nombre = $request->input('nombre');
@@ -227,26 +176,27 @@ class AdminController extends Controller
         $cantidadXL = $request->input('cantidadXL') ? $request->input('cantidadXL') : 0;
         $cantidadXXL = $request->filled('cantidadXXL') ? $request->input('cantidadXXL') : 0;
 
-        Log::info("XXL: " . $cantidadXXL);
-
         return $this->adminModel->guardarCamiseta($nombre, $descripcion, $precio, $estado, $imagen, $cantidadXS, $cantidadS, $cantidadM, $cantidadL, $cantidadXL, $cantidadXXL);
     }
 
-    private function validacionesParaEditarLaCamiseta(Request $request)
-    {
-        return Validator::make($request->all(), [
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'required|string',
-            'precio' => 'required|numeric',
-            'estado' => 'required|integer',
-            'imagen' => 'image|mimes:jpeg,png,jpg|max:2048'
-        ], [
-            'imagen.image' => 'El archivo que subiste no es una imagen. Por favor, selecciona una imagen válida (JPEG, PNG o JPG).',
-            'imagen.mimes' => 'La imagen debe ser de tipo JPEG, PNG o JPG.',
-            'imagen.max' => 'La imagen no puede ser mayor a 2MB. Por favor, sube una imagen más pequeña.',
-            'nombre.required' => 'El nombre de la camiseta es requerido.',
-            'descripcion.required' => 'La descripción de la camiseta es requerida.',
-            'precio.required' => 'El precio de la camiseta es requerido.'
-        ]);
+    private function edicion(Request $request, $id) {
+        $nombre = $request->nombre;
+        $descripcion = $request->descripcion;
+        $precio = $request->precio;
+        $estado = $request->estado;
+        $cantidadXS = $request->input('cantidadXS') ? $request->input('cantidadXS') : 0;
+        $cantidadS = $request->input('cantidadS') ? $request->input('cantidadS') : 0;
+        $cantidadM = $request->input('cantidadM') ? $request->input('cantidadM') : 0;
+        $cantidadL = $request->input('cantidadL') ? $request->input('cantidadL') : 0;
+        $cantidadXL = $request->input('cantidadXL') ? $request->input('cantidadXL') : 0;
+        $cantidadXXL = $request->filled('cantidadXXL') ? $request->input('cantidadXXL') : 0;
+
+        if ($request->hasFile('imagen') && $request->file('imagen')->isValid()) {
+            $imagen = file_get_contents($request->file('imagen')->getRealPath());
+        } else {
+            $imagen = null;
+        }
+
+        return $this->adminModel->actualizarCamiseta($id, $nombre, $descripcion, $precio, $estado, $imagen, $cantidadXS, $cantidadS, $cantidadM, $cantidadL, $cantidadXL, $cantidadXXL);
     }
 }

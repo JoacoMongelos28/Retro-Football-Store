@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class AdminModel extends Model
 {
@@ -24,6 +25,12 @@ class AdminModel extends Model
         $camiseta->stock_talle_xl = $cantidadXL;
         $camiseta->stock_talle_xxl = $cantidadXXL;
 
+        static::creating(function ($camiseta) {
+            $slug = Str::slug($camiseta->nombre);
+            $count = AdminModel::where('slug', 'LIKE', "{$slug}%")->count();
+            $camiseta->slug = $count ? "{$slug}-{$count}" : $slug;
+        });
+        
         return $camiseta->save();
     }
 
@@ -60,11 +67,22 @@ class AdminModel extends Model
         $camiseta->stock_talle_xl += $cantidadXL;
         $camiseta->stock_talle_xxl += $cantidadXXL;
 
+        static::creating(function ($camiseta) {
+            $slug = Str::slug($camiseta->nombre);
+            $count = AdminModel::where('slug', 'LIKE', "{$slug}%")->count();
+            $camiseta->slug = $count ? "{$slug}-{$count}" : $slug;
+        });
+
         return $camiseta->save();
     }
 
     public function eliminarCamiseta($id) {
         $camiseta = AdminModel::find($id);
         return $camiseta->delete();
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 }

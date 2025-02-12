@@ -20,7 +20,7 @@
                         <th>Imagen</th>
                         <th>Nombre</th>
                         <th>Precio</th>
-                        <th>Total</th>
+                        <th>Subtotal</th>
                         <th>Cantidad</th>
                     </tr>
                 </thead>
@@ -38,7 +38,7 @@
                                 <button class="incrementar" data-id="{{ $camiseta->id }}">+</button>
                             </td>
                             <td><button class="eliminar" data-id="{{ $camiseta->id }}">Eliminar</button></td>
-                            <td><a href="/home/camiseta/{{ $camiseta->id }}">Ver</a></td>
+                            <td><a href="/home/camiseta/{{ $camiseta->slug }}">Ver</a></td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -103,7 +103,7 @@
                         $("#total-" + id).text(response.nuevoTotal);
                         $(".carrito span").text(response.totalCantidadHeader);
                         $(".carrito p").text(`$${response.totalHeader}`);
-                        $("#totalPrecio").text(`$${response.nuevoTotal}`);
+                        $("#totalPrecio").text(`$${response.totalHeader}`);
                     } else {
                         console.error("Error al actualizar cantidad:", response.error);
                     }

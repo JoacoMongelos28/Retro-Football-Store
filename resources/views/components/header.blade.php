@@ -15,7 +15,7 @@
         <nav>
             <div class="contenedor-nav">
                 <a href="/" class="logo-txt">
-                    <span class="joaquin">Joaquin</span><span class="mongelos">Mongelos</span>
+                    <span class="joaquin">Retro</span><span class="mongelos">Store</span>
                 </a>
                 <button class="menu-toggle" aria-label="Toggle menu">
                     <i class="fa-solid fa-bars"></i>
@@ -23,8 +23,8 @@
                 <div class="contenedor-menu-nav">
                     <a class="menu-a" href="/">Home</a>
                     @if ($usuario == null)
-                        <a class="menu-a" href="/registro">Registrarse</a>
-                        <a class="menu-a" href="/login">Iniciar Sesion</a>
+                        <a class="menu-a" href="/registro" onclick="guardarUrl()">Registrarse</a>
+                        <a class="menu-a" href="/login" onclick="guardarUrl()">Iniciar Sesion</a>
                     @else
                         <a class="menu-a" href="/cerrar-sesion">Cerrar Sesion</a>
                         <div>
@@ -39,3 +39,9 @@
             </div>
         </nav>
     </header>
+
+    <script>
+        function guardarUrl() {
+            localStorage.setItem("url_previa", window.location.href);
+        }
+    </script>

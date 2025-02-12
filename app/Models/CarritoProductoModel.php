@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class CarritoProductoModel extends Model
 {
@@ -45,6 +44,7 @@ class CarritoProductoModel extends Model
                 'camiseta.nombre',
                 'camiseta.imagen',
                 'camiseta.id',
+                'camiseta.slug',
                 DB::raw('carrito_camiseta.cantidad * camiseta.precio as total')
             )->where('carrito_camiseta.carrito_id', $idCarrito)->get();
 
@@ -81,6 +81,9 @@ class CarritoProductoModel extends Model
                 'carrito_camiseta.cantidad',
                 'camiseta.precio',
                 'carrito_camiseta.talle',
+                'camiseta.nombre',
+                'camiseta.slug',
+                'camiseta.imagen',
                 DB::raw('carrito_camiseta.cantidad * camiseta.precio as total')
             )->where('carrito_camiseta.carrito_id', $carritoObtenido->carrito_id)->get();
     }

@@ -30,6 +30,7 @@ return new class extends Migration
             $table->integer('stock_talle_xl');
             $table->integer('stock_talle_xxl');
             $table->integer('stock_talle_xs');
+            $table->string('slug')->unique();
             $table->unsignedBigInteger('estado');
             $table->foreign('estado')->references('id')->on('tipo_estado')->onDelete('cascade')->onUpdate('cascade');
         });

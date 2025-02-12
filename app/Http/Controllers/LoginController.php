@@ -35,7 +35,12 @@ class LoginController extends Controller
 
         $usuarioObtenido = $this->loginModel->buscarUsuario($usuario, $contraseña);
 
-        if ($usuarioObtenido != null && $usuarioObtenido->tipo_usuario == '2') {
+        $redirectUrl = $request->input('redirect');
+
+        if ($usuarioObtenido != null && $usuarioObtenido->tipo_usuario == '2' && $redirectUrl) {
+            session(['usuarioId' => $usuarioObtenido->id]);
+            return redirect($redirectUrl);
+        } else if ($usuarioObtenido != null && $usuarioObtenido->tipo_usuario == '2') {
             session(['usuarioId' => $usuarioObtenido->id]);
             return redirect('home');
         } else if ($usuarioObtenido != null && $usuarioObtenido->tipo_usuario == '1') {
