@@ -46,6 +46,14 @@
                     </div>
 
                     <div>
+                        <label for="imagen_trasera">Seleccione una nueva imagen trasera:</label>
+                        <input type="file" name="imagen_trasera" id="imagen_trasera" accept="image/*">
+                        @error('imagen_trasera')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
                         <label for="estado">Estado</label>
                         <select name="estado" id="estado">
                             <option value="1" {{ old('estado', $camiseta->estado) == 1 ? 'selected' : '' }}>

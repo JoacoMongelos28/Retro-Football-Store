@@ -22,11 +22,13 @@
                         <th>Precio</th>
                         <th>Subtotal</th>
                         <th>Cantidad</th>
+                        <th>Talle</th>
+                        <th>Stock</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($carrito as $camiseta)
-                        <tr>
+                        <tr id="tr-carrito">
                             <td><img src="{{ $camiseta->imagen }}"></td>
                             <td>{{ $camiseta->nombre }}</td>
                             <td>${{ $camiseta->precio }}</td>
@@ -37,17 +39,21 @@
                                     readonly>
                                 <button class="incrementar" data-id="{{ $camiseta->id }}">+</button>
                             </td>
+                            <td>{{ $camiseta->talle }}</td>
+                            <td id="stock">{{ $camiseta->stock_disponible }}</td>
                             <td><button class="eliminar" data-id="{{ $camiseta->id }}">Eliminar</button></td>
                             <td><a href="/home/camiseta/{{ $camiseta->slug }}">Ver</a></td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-            <p id="totalPrecio">${{ $total }}</p>
-            <form action="/pagar" method="POST">
-                @csrf
-                <button type="submit">Comprar</button>
-            </form>
+            <div id="contenedor-pagar">
+                <p id="totalPrecio">${{ $total }}</p>
+                <form action="/pagar" method="POST">
+                    @csrf
+                    <button type="submit">Comprar</button>
+                </form>
+            </div>
         @else
             <p>Tu carrito está vacío.</p>
         @endif
@@ -76,6 +82,11 @@
                     $(".carrito span").text(response.cantidadTotal);
                     $(".carrito p").text(`$${response.total}`);
                     $("#totalPrecio").text(`$${response.total}`);
+
+                    if (response.cantidadTotal === 0) {
+                        $("table").remove();
+                        $("#contenedor-pagar").remove();
+                    }
                 },
                 error: function(xhr) {
                     console.error("Error al eliminar del carrito:", xhr.responseText);
@@ -86,6 +97,7 @@
         $(".incrementar, .decrementar").click(function() {
             let id = $(this).data("id");
             let accion = $(this).hasClass("incrementar") ? 1 : -1;
+            let stock = parseInt($("#stock").text());
 
             $.ajax({
                 url: "/actualizar",
@@ -95,6 +107,7 @@
                 },
                 data: {
                     id: id,
+                    stock: stock,
                     accion: accion
                 },
                 success: function(response) {
@@ -104,8 +117,6 @@
                         $(".carrito span").text(response.totalCantidadHeader);
                         $(".carrito p").text(`$${response.totalHeader}`);
                         $("#totalPrecio").text(`$${response.totalHeader}`);
-                    } else {
-                        console.error("Error al actualizar cantidad:", response.error);
                     }
                 },
                 error: function(xhr) {

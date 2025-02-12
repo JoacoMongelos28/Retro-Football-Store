@@ -36,6 +36,7 @@ return new class extends Migration
         });
         
         DB::statement('ALTER TABLE camiseta ADD COLUMN imagen MEDIUMBLOB');
+        DB::statement('ALTER TABLE camiseta ADD COLUMN imagen_trasera MEDIUMBLOB');
     }
 
     /**

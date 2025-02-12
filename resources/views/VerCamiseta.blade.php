@@ -6,16 +6,23 @@
 
 <main>
     <div class="contenedor-principal">
-        @if ($camisetaObtenida)
         <div>
             <h1>{{ $camisetaObtenida->nombre }}</h1>
         </div>
 
         <div class="contenedor-camiseta">
             <section>
-                <article>
-                    <img src="{{ $camisetaObtenida->imagen }}" alt="{{ $camisetaObtenida->nombre }}"
+                <article class="contenedor-imagen">
+                    <img src="{{ $camisetaObtenida->imagen }}" alt="{{ $camisetaObtenida->nombre }}" id="imagen-principal"
                         title="{{ $camisetaObtenida->nombre }}">
+                    <div class="lupa" id="lupa"></div>
+
+                    <div class="miniaturas">
+                        <img src="{{ $camisetaObtenida->imagen }}" alt="{{ $camisetaObtenida->nombre }}"
+                            class="miniatura" onclick="cambiarImagen('{{ $camisetaObtenida->imagen }}')">
+                        <img src="{{ $camisetaObtenida->imagen_trasera }}" alt="{{ $camisetaObtenida->nombre }}"
+                            class="miniatura" onclick="cambiarImagen('{{ $camisetaObtenida->imagen_trasera }}')">
+                    </div>
                 </article>
             </section>
 
@@ -24,20 +31,25 @@
                     <h3>{{ $camisetaObtenida->nombre }}</h3>
                     <p>{{ $camisetaObtenida->descripcion }}</p>
                     <p id="precio">{{ $camisetaObtenida->precio }}</p>
+                    <p id="stock-mensaje"></p>
 
-                    <select name="talle" id="talle">
-                        <option value="">Selecciona un talle</option>
-                        <option value="stock_talle_xs">XS</option>
-                        <option value="stock_talle_s">S</option>
-                        <option value="stock_talle_m">M</option>
-                        <option value="stock_talle_l">L</option>
-                        <option value="stock_talle_xl">XL</option>
-                        <option value="stock_talle_xxl">XXL</option>
-                    </select>
-                    <input type="number" name="cantidad" id="cantidad" style="display: none;"
-                        placeholder="Cantidad de camisetas">
+                    @if (count($tallesDisponibles) > 0)
+                        <select name="talle" id="talle">
+                            <option value="">Talles disponibles</option>
+                            @foreach ($tallesDisponibles as $talle)
+                                <option value="stock_talle_{{ strtolower($talle['talle']) }}"
+                                    data-stock="{{ $talle['stock'] }}">{{ $talle['talle'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <input type="number" name="cantidad" id="cantidad" style="display: none;"
+                            placeholder="Cantidad de camisetas">
+                        <button class="btn-agregar" data-id="{{ $camisetaObtenida->id }}">🛒 Agregar al
+                            carrito</button>
+                    @else
+                        <p style="color: red">No hay talles disponibles para esta camiseta en este momento.</p>
+                    @endif
 
-                    <button class="btn-agregar" data-id="{{ $camisetaObtenida->id }}">🛒 Agregar al carrito</button>
                     <p id="mensaje-error"></p>
                 </article>
             </section>
@@ -58,8 +70,9 @@
                                 title="{{ $camiseta->nombre }}">
                             <p>{{ $camiseta->nombre }}</p>
                             Ver
-                        
-                        <p id="precio">{{ $camiseta->precio }}</p></a>
+
+                            <p id="precio">{{ $camiseta->precio }}</p>
+                        </a>
                     </article>
                 @endforeach
 
@@ -67,16 +80,42 @@
             </div>
         </aside>
     </div>
-    @else
-        <h3>No existe la camiseta</h3>
-    @endif
 </main>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script src="{{ asset('js/ver.js') }}"></script>
 <script>
+    function cambiarImagen(nuevaImagen) {
+        document.getElementById("imagen-principal").src = nuevaImagen;
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
+        const imagen = document.getElementById("imagen-principal");
+        const lupa = document.getElementById("lupa");
+
+        imagen.addEventListener("mousemove", function(e) {
+            const {
+                left,
+                top,
+                width,
+                height
+            } = imagen.getBoundingClientRect();
+            const x = ((e.clientX - left) / width) * 100;
+            const y = ((e.clientY - top) / height) * 100;
+
+            lupa.style.display = "block";
+            lupa.style.backgroundImage = `url(${imagen.src})`;
+            lupa.style.backgroundSize = `${width * 2}px ${height * 2}px`;
+            lupa.style.backgroundPosition = `${x}% ${y}%`;
+            lupa.style.left = `${e.clientX - 60}px`;
+            lupa.style.top = `${e.clientY - 10}px`;
+        });
+
+        imagen.addEventListener("mouseleave", function() {
+            lupa.style.display = "none";
+        });
+
         const botonesAgregar = document.querySelectorAll(".btn-agregar");
 
         botonesAgregar.forEach(boton => {
@@ -139,11 +178,21 @@
 
     document.getElementById("talle").addEventListener("change", function() {
         const talle = this.value;
+        const cantidadInput = document.getElementById("cantidad");
+        const stockMensaje = document.getElementById('stock-mensaje');
+        var selectedOption = this.options[this.selectedIndex];
+        var stock = selectedOption.getAttribute('data-stock');
 
         if (talle) {
-            document.getElementById("cantidad").style.display = "block";
+            cantidadInput.style.display = "block";
         } else {
-            document.getElementById("cantidad").style.display = "none";
+            cantidadInput.style.display = "none";
+        }
+
+        if (stock) {
+            stockMensaje.textContent = "Stock disponible: " + stock;
+        } else {
+            stockMensaje.textContent = "No hay stock disponible.";
         }
     });
 </script>

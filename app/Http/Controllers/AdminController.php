@@ -56,16 +56,26 @@ class AdminController extends Controller
 
     public function guardarCamiseta(AgregarCamisetaRequest $request)
     {
-        if ($request->fails()) {
-            return redirect('admin/agregar')->withErrors($request)->withInput();
-        }
+        if ($request->hasFile('imagen') && $request->file('imagen')->isValid() && $request->hasFile('imagen_trasera') && $request->file('imagen_trasera')->isValid()) {
+            if ($request->file('imagen')->getSize() > 2048 * 1024 || $request->file('imagen_trasera')->getSize() > 2048 * 1024) {
+                return redirect('admin/agregar')->with('error', 'La imagen no puede ser mayor a 2MB.');
+            }
 
-        if ($request->hasFile('imagen') && $request->file('imagen')->isValid()) {
+            $resultado = $this->guardar($request);
+        } else if ($request->hasFile('imagen') && $request->file('imagen')->isValid()) {
             if ($request->file('imagen')->getSize() > 2048 * 1024) {
                 return redirect('admin/agregar')->with('error', 'La imagen no puede ser mayor a 2MB.');
             }
 
             $resultado = $this->guardar($request);
+        } else if ($request->hasFile('imagen_trasera') && $request->file('imagen_trasera')->isValid()) {
+            if ($request->file('imagen_trasera')->getSize() > 2048 * 1024) {
+                return redirect('admin/agregar')->with('error', 'La imagen no puede ser mayor a 2MB.');
+            }
+
+            $resultado = $this->guardar($request);
+        } else {
+            return redirect('admin/agregar')->with('error', 'Debe subir una imagen.');
         }
 
         if ($resultado) {
@@ -168,15 +178,27 @@ class AdminController extends Controller
         $descripcion = $request->input('descripcion');
         $precio = $request->input('precio');
         $estado = $request->input('estado');
-        $imagen = file_get_contents($request->file('imagen')->getRealPath());
+
+        $imagen = null;
+        $imagenTrasera = null;
+
+        if ($request->hasFile('imagen') && $request->file('imagen')->isValid()) {
+            $imagen = file_get_contents($request->file('imagen')->getRealPath());
+
+        }
+
+        if ($request->hasFile('imagen_trasera') && $request->file('imagen_trasera')->isValid()) {
+            $imagenTrasera = file_get_contents($request->file('imagen_trasera')->getRealPath());
+        }
+
         $cantidadXS = $request->input('cantidadXS') ? $request->input('cantidadXS') : 0;
         $cantidadS = $request->input('cantidadS') ? $request->input('cantidadS') : 0;
         $cantidadM = $request->input('cantidadM') ? $request->input('cantidadM') : 0;
         $cantidadL = $request->input('cantidadL') ? $request->input('cantidadL') : 0;
         $cantidadXL = $request->input('cantidadXL') ? $request->input('cantidadXL') : 0;
-        $cantidadXXL = $request->filled('cantidadXXL') ? $request->input('cantidadXXL') : 0;
+        $cantidadXXL = $request->input('cantidadXXL') ? $request->input('cantidadXXL') : 0;
 
-        return $this->adminModel->guardarCamiseta($nombre, $descripcion, $precio, $estado, $imagen, $cantidadXS, $cantidadS, $cantidadM, $cantidadL, $cantidadXL, $cantidadXXL);
+        return $this->adminModel->guardarCamiseta($nombre, $descripcion, $precio, $estado, $imagen, $imagenTrasera, $cantidadXS, $cantidadS, $cantidadM, $cantidadL, $cantidadXL, $cantidadXXL);
     }
 
     private function edicion(Request $request, $id) {
@@ -191,12 +213,20 @@ class AdminController extends Controller
         $cantidadXL = $request->input('cantidadXL') ? $request->input('cantidadXL') : 0;
         $cantidadXXL = $request->filled('cantidadXXL') ? $request->input('cantidadXXL') : 0;
 
-        if ($request->hasFile('imagen') && $request->file('imagen')->isValid()) {
+        if ($request->hasFile('imagen') && $request->file('imagen')->isValid() && $request->hasFile('imagen_trasera') && $request->file('imagen_trasera')->isValid()) {
             $imagen = file_get_contents($request->file('imagen')->getRealPath());
-        } else {
+            $imagenTrasera = file_get_contents($request->file('imagen_trasera')->getRealPath());
+        } else if ($request->hasFile('imagen') && $request->file('imagen')->isValid()) {
+            $imagen = file_get_contents($request->file('imagen')->getRealPath());
+            $imagenTrasera = null;
+        } else if ($request->hasFile('imagen_trasera') && $request->file('imagen_trasera')->isValid()) {
             $imagen = null;
+            $imagenTrasera = file_get_contents($request->file('imagen_trasera')->getRealPath());
+        }  else {
+            $imagen = null;
+            $imagenTrasera = null;
         }
 
-        return $this->adminModel->actualizarCamiseta($id, $nombre, $descripcion, $precio, $estado, $imagen, $cantidadXS, $cantidadS, $cantidadM, $cantidadL, $cantidadXL, $cantidadXXL);
+        return $this->adminModel->actualizarCamiseta($id, $nombre, $descripcion, $precio, $estado, $imagen, $imagenTrasera, $cantidadXS, $cantidadS, $cantidadM, $cantidadL, $cantidadXL, $cantidadXXL);
     }
 }
