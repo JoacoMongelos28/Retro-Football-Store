@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class LoginModel extends Model
 {
     protected $table = 'usuario';
+    public $timestamps = false;
 
     public function buscarUsuario($usuario, $contraseña)
     {

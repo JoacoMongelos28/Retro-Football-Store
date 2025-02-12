@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Mail\CompraMail;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
 
 class HomeModel extends Model
 {
@@ -15,15 +16,15 @@ class HomeModel extends Model
     {
         $camisetasDestacadas = $this->where('estado', 1)->get();
 
-        foreach ($camisetasDestacadas as $camiseta) {
+        $camisetasDestacadas = $camisetasDestacadas->shuffle()->take(12);
+
+        return $camisetasDestacadas->map(function ($camiseta) {
             if ($camiseta->imagen) {
                 $imagenBase64 = base64_encode($camiseta->imagen);
-                $imagenDataUrl = 'data:image/jpeg;base64,' . $imagenBase64;
-                $camiseta->imagen = $imagenDataUrl;
+                $camiseta->imagen = 'data:image/jpeg;base64,' . $imagenBase64;
             }
-        }
-
-        return $camisetasDestacadas;
+            return $camiseta;
+        });
     }
 
     public function obtenerCamisetasEnOferta()
@@ -58,15 +59,14 @@ class HomeModel extends Model
 
     public function obtenerTodasLasCamisetas()
     {
-        $camisetas = $this->all();
+        $camisetas = $this->paginate(1);
 
-        foreach ($camisetas as $camiseta) {
+        $camisetas->getCollection()->transform(function ($camiseta) {
             if ($camiseta->imagen) {
-                $imagenBase64 = base64_encode($camiseta->imagen);
-                $imagenDataUrl = 'data:image/jpeg;base64,' . $imagenBase64;
-                $camiseta->imagen = $imagenDataUrl;
+                $camiseta->imagen = 'data:image/jpeg;base64,' . base64_encode($camiseta->imagen);
             }
-        }
+            return $camiseta;
+        });
 
         return $camisetas;
     }
@@ -93,31 +93,47 @@ class HomeModel extends Model
             if ($camiseta->talle === 'stock_talle_s') {
                 $camisetaModel->stock_talle_s -= $camiseta->cantidad;
                 $camisetaModel->save();
-                return true;
             } else if ($camiseta->talle === 'stock_talle_m') {
                 $camisetaModel->stock_talle_m -= $camiseta->cantidad;
                 $camisetaModel->save();
-                return true;
             } else if ($camiseta->talle === 'stock_talle_l') {
                 $camisetaModel->stock_talle_l -= $camiseta->cantidad;
                 $camisetaModel->save();
-                return true;
             } else if ($camiseta->talle === 'stock_talle_xl') {
                 $camisetaModel->stock_talle_xl -= $camiseta->cantidad;
                 $camisetaModel->save();
-                return true;
             } else if ($camiseta->talle === 'stock_talle_xxl') {
                 $camisetaModel->stock_talle_xxl -= $camiseta->cantidad;
                 $camisetaModel->save();
-                return true;
             } else if ($camiseta->talle === 'stock_talle_xs') {
-                $camisetaModel->stock_talle_xxxl -= $camiseta->cantidad;
+                $camisetaModel->stock_talle_xs -= $camiseta->cantidad;
                 $camisetaModel->save();
-                return true;
             } else {
                 return false;
             }
-            return false;
         }
+    }
+
+    public function enviarMail($productos, $email)
+    {
+        foreach ($productos as $producto) {
+            $producto->imagen = 'data:image/jpeg;base64,' . base64_encode($producto->imagen);
+
+            if ($producto->talle === 'stock_talle_s') {
+                $producto->talle = 'S';
+            } else if ($producto->talle === 'stock_talle_m') {
+                $producto->talle = 'M';
+            } else if ($producto->talle === 'stock_talle_l') {
+                $producto->talle = 'L';
+            } else if ($producto->talle === 'stock_talle_xl') {
+                $producto->talle = 'XL';
+            } else if ($producto->talle === 'stock_talle_xxl') {
+                $producto->talle = 'XXL';
+            } else if ($producto->talle === 'stock_talle_xs') {
+                $producto->talle = 'XS';
+            }
+        }
+
+        Mail::to($email)->send(new CompraMail($productos));
     }
 }

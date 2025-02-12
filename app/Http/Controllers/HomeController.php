@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\HomeModel;
 use App\Models\CarritoProductoModel;
 use App\Models\CarritoModel;
-use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -77,12 +75,12 @@ class HomeController extends Controller
         ];
     }    
 
-    public function verCamiseta($id) {
-        if (!is_numeric($id) || $id <= 0) {
+    public function verCamiseta(HomeModel $camiseta) {
+        if (!is_numeric($camiseta->id) || $camiseta->id <= 0) {
             return redirect('home')->with('error', 'El ID de la camiseta no es válido');
         }
 
-        $data['camisetaObtenida'] = $this->homeModel->obtenerCamisetaPorId($id);
+        $data['camisetaObtenida'] = $this->homeModel->obtenerCamisetaPorId($camiseta->id);
         $data['camisetasEnOferta'] = $this->homeModel->obtenerCamisetasEnOfertaDesordenadas();
         return view('VerCamiseta', $data);
     }

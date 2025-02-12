@@ -35,7 +35,7 @@
             @if (!empty($camisetasDestacadas))
                 @foreach ($camisetasDestacadas as $camiseta)
                     <article>
-                        <a href="/home/camiseta/{{ $camiseta->id }}"><img src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}">
+                        <a href="/home/camiseta/{{ $camiseta->slug }}"><img src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}">
                         <p>{{ $camiseta->nombre }}</p>
                         Ver</a>
                         <p id="precio">{{ $camiseta->precio }}</p>
@@ -57,7 +57,7 @@
 
             @foreach ($camisetasEnOferta as $index => $camiseta)
                 <article class="slide {{ $index === 0 ? 'active' : '' }}">
-                    <a href="/home/camiseta/{{ $camiseta->id }}"><img src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}" title="{{ $camiseta->nombre }}">
+                    <a href="/home/camiseta/{{ $camiseta->slug }}"><img src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}" title="{{ $camiseta->nombre }}">
                     <p>{{ $camiseta->nombre }}</p>
                     Ver</a>
                     <p id="precio">{{ $camiseta->precio }}</p>

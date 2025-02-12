@@ -6,6 +6,7 @@
 
 <main>
     <div class="contenedor-principal">
+        @if ($camisetaObtenida)
         <div>
             <h1>{{ $camisetaObtenida->nombre }}</h1>
         </div>
@@ -52,14 +53,13 @@
 
                 @foreach ($camisetasEnOferta as $index => $camiseta)
                     <article class="slide {{ $index === 0 ? 'active' : '' }}">
-                        <a href="/home/camiseta/{{ $camiseta->id }}"><img class="camisetas-oferta"
+                        <a href="/home/camiseta/{{ $camiseta->slug }}"><img class="camisetas-oferta"
                                 src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}"
                                 title="{{ $camiseta->nombre }}">
                             <p>{{ $camiseta->nombre }}</p>
                             Ver
-                        </a>
-                        <p id="precio">{{ $camiseta->precio }}</p>
-                        <button class="btn-agregar" data-id="{{ $camiseta->id }}">🛒 Agregar al carrito</button>
+                        
+                        <p id="precio">{{ $camiseta->precio }}</p></a>
                     </article>
                 @endforeach
 
@@ -67,6 +67,9 @@
             </div>
         </aside>
     </div>
+    @else
+        <h3>No existe la camiseta</h3>
+    @endif
 </main>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -81,6 +84,7 @@
                 const camisetaId = boton.getAttribute("data-id");
                 const cantidad = document.getElementById("cantidad").value;
                 const talle = document.getElementById("talle").value;
+                const url = encodeURIComponent(window.location.href);
 
                 $.ajax({
                     url: '/agregar',
@@ -89,6 +93,7 @@
                         id: camisetaId,
                         cantidad: cantidad,
                         talle: talle,
+                        url: url,
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
@@ -96,13 +101,15 @@
                             response.carrito.cantidad;
                         document.querySelector(".carrito p").textContent =
                             `$${response.carrito.total}`;
-                        mostrarMensajeExitoso("Camiseta agregada al carrito correctamente");
+                        mostrarMensajeExitoso(
+                            "Camiseta agregada al carrito correctamente");
                     },
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     }
                 }).fail(function(xhr) {
                     if (xhr.status === 401) {
+                        localStorage.setItem('url_previa', window.location.href);
                         window.location.href = '/login';
                     } else {
                         let response = JSON.parse(xhr.responseText);

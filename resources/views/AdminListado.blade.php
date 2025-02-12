@@ -34,7 +34,7 @@
                             <img src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}">
                             <p>{{ $camiseta->nombre }}</p>
                             <p>{{ $camiseta->precio }}</p>
-                            <a href="/admin/editar/{{ $camiseta->id }}">Editar</a>
+                            <a href="/admin/editar/{{ $camiseta->slug }}">Editar</a>
                             <a href="/admin/eliminar/{{ $camiseta->id }}">Eliminar</a>
                         </article>
                     @endforeach

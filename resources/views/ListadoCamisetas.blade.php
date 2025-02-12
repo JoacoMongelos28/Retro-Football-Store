@@ -22,6 +22,8 @@
                     </article>
                 @endforeach
             @endif
+
+            {{ $camisetas->links() }}
         </section>
     </div>
 </main>
