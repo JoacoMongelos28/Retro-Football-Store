@@ -45,10 +45,24 @@ class CarritoProductoModel extends Model
                 'camiseta.imagen',
                 'camiseta.id',
                 'camiseta.slug',
-                DB::raw('carrito_camiseta.cantidad * camiseta.precio as total')
+                'carrito_camiseta.talle',
+                DB::raw('carrito_camiseta.cantidad * camiseta.precio as total'),
+                // Agregamos el stock disponible del talle seleccionado
+                DB::raw("CASE 
+                WHEN carrito_camiseta.talle = 'stock_talle_s' THEN camiseta.stock_talle_s
+                WHEN carrito_camiseta.talle = 'stock_talle_m' THEN camiseta.stock_talle_m
+                WHEN carrito_camiseta.talle = 'stock_talle_l' THEN camiseta.stock_talle_l
+                WHEN carrito_camiseta.talle = 'stock_talle_xl' THEN camiseta.stock_talle_xl
+                WHEN carrito_camiseta.talle = 'stock_talle_xxl' THEN camiseta.stock_talle_xxl
+                WHEN carrito_camiseta.talle = 'stock_talle_xs' THEN camiseta.stock_talle_xs
+                ELSE 0 END AS stock_disponible")
             )->where('carrito_camiseta.carrito_id', $idCarrito)->get();
 
         foreach ($camisetas as $camiseta) {
+            // Normalizar el talle para que se vea sin el prefijo "stock_talle_"
+            $camiseta->talle = str_replace('stock_talle_', '', $camiseta->talle);
+
+            // Convertir la imagen en base64 si es necesario
             if ($camiseta->imagen) {
                 $imagenBase64 = base64_encode($camiseta->imagen);
                 $imagenDataUrl = 'data:image/jpeg;base64,' . $imagenBase64;
@@ -58,6 +72,7 @@ class CarritoProductoModel extends Model
 
         return $camisetas;
     }
+
 
     public function joinearCarrito($carritoObtenido)
     {
@@ -102,11 +117,13 @@ class CarritoProductoModel extends Model
         return false;
     }
 
-    public function obtenerCamisetaPorId($idCamiseta) {
+    public function obtenerCamisetaPorId($idCamiseta)
+    {
         return CarritoProductoModel::where('camiseta_id', $idCamiseta)->first();
     }
 
-    public function actualizarTotalYCantidad($idCarrito) {
+    public function actualizarTotalYCantidad($idCarrito)
+    {
         $carritoObtenido = CarritoProductoModel::join('camiseta', 'carrito_camiseta.camiseta_id', '=', 'camiseta.id')
             ->select(
                 'carrito_camiseta.cantidad',
@@ -118,7 +135,8 @@ class CarritoProductoModel extends Model
         return $carritoObtenido;
     }
 
-    public function obtenerProductosDelCarrito($idCarrito) {
+    public function obtenerProductosDelCarrito($idCarrito)
+    {
         return CarritoProductoModel::where('carrito_id', $idCarrito)->get();
     }
 }

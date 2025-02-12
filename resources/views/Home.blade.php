@@ -35,9 +35,14 @@
             @if (!empty($camisetasDestacadas))
                 @foreach ($camisetasDestacadas as $camiseta)
                     <article>
-                        <a href="/home/camiseta/{{ $camiseta->slug }}"><img src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}">
-                        <p>{{ $camiseta->nombre }}</p>
-                        Ver</a>
+                        <a href="/home/camiseta/{{ $camiseta->slug }}">
+                            <div class="imagen-hover">
+                                <img class="frontal" src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}">
+                                <img class="trasera" src="{{ $camiseta->imagen_trasera }}" alt="{{ $camiseta->nombre }}">
+                            </div>
+                            <p>{{ $camiseta->nombre }}</p>
+                            Ver
+                        </a>
                         <p id="precio">{{ $camiseta->precio }}</p>
                     </article>
                 @endforeach

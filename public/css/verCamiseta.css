@@ -41,3 +41,36 @@ img {
     width: 200px;
     height: 200px;
 }
+
+.contenedor {
+    position: relative;
+    display: inline-block;
+}
+
+.lupa {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border: 2px solid #000;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    display: none;
+}
+
+.miniaturas {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.miniatura {
+    width: 50px; 
+    height: 50px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border 0.2s ease-in-out;
+}
+
+.miniatura:hover {
+    border: 2px solid #000;
+}

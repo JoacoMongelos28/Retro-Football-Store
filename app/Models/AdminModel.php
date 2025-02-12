@@ -10,7 +10,7 @@ class AdminModel extends Model
     protected $table = 'camiseta';
     public $timestamps = false;
 
-    public function guardarCamiseta($nombre, $descripcion, $precio, $estado, $imagen, $cantidadXS, $cantidadS, $cantidadM, $cantidadL, $cantidadXL, $cantidadXXL) {
+    public function guardarCamiseta($nombre, $descripcion, $precio, $estado, $imagen, $imagenTrasera, $cantidadXS, $cantidadS, $cantidadM, $cantidadL, $cantidadXL, $cantidadXXL) {
         $camiseta = new AdminModel();
 
         $camiseta->nombre = $nombre;
@@ -18,6 +18,7 @@ class AdminModel extends Model
         $camiseta->precio = $precio;
         $camiseta->estado = $estado;
         $camiseta->imagen = $imagen;
+        $camiseta->imagen_trasera = $imagenTrasera;
         $camiseta->stock_talle_xs = $cantidadXS;
         $camiseta->stock_talle_s = $cantidadS;
         $camiseta->stock_talle_m = $cantidadM;
@@ -52,7 +53,7 @@ class AdminModel extends Model
         return AdminModel::find($id);
     }
 
-    public function actualizarCamiseta($id, $nombre, $descripcion, $precio, $estado, $imagen, $cantidadXS, $cantidadS, $cantidadM, $cantidadL, $cantidadXL, $cantidadXXL) {
+    public function actualizarCamiseta($id, $nombre, $descripcion, $precio, $estado, $imagen, $imagenTrasera, $cantidadXS, $cantidadS, $cantidadM, $cantidadL, $cantidadXL, $cantidadXXL) {
         $camiseta = AdminModel::find($id);
 
         $camiseta->nombre = $nombre;
@@ -60,6 +61,7 @@ class AdminModel extends Model
         $camiseta->precio = $precio;
         $camiseta->estado = $estado;
         $camiseta->imagen = $imagen ?? $camiseta->imagen;
+        $camiseta->imagen_trasera = $imagenTrasera ?? $camiseta->imagen_trasera;
         $camiseta->stock_talle_xs += $cantidadXS;
         $camiseta->stock_talle_s += $cantidadS;
         $camiseta->stock_talle_m += $cantidadM;
@@ -79,10 +81,5 @@ class AdminModel extends Model
     public function eliminarCamiseta($id) {
         $camiseta = AdminModel::find($id);
         return $camiseta->delete();
-    }
-
-    public function getRouteKeyName()
-    {
-        return 'slug';
     }
 }

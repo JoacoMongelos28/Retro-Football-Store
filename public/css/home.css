@@ -84,3 +84,32 @@ img {
     padding: 10px;
     transform: translateY(-50%);
 }
+
+.imagen-hover {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: auto;
+}
+
+.imagen-hover img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.imagen-hover .trasera {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+.imagen-hover:hover .trasera {
+    opacity: 1;
+}
+
+.imagen-hover:hover .frontal {
+    opacity: 0;
+}

@@ -19,27 +19,18 @@ class HomeModel extends Model
         $camisetasDestacadas = $camisetasDestacadas->shuffle()->take(12);
 
         return $camisetasDestacadas->map(function ($camiseta) {
-            if ($camiseta->imagen) {
+            if ($camiseta->imagen && $camiseta->imagen_trasera) {
                 $imagenBase64 = base64_encode($camiseta->imagen);
+                $imagenTraseraBase64 = base64_encode($camiseta->imagen_trasera);
                 $camiseta->imagen = 'data:image/jpeg;base64,' . $imagenBase64;
-            }
-            return $camiseta;
-        });
-    }
-
-    public function obtenerCamisetasEnOferta()
-    {
-        $camisetasEnOferta = $this->where('estado', 2)->get();
-
-        foreach ($camisetasEnOferta as $camiseta) {
-            if ($camiseta->imagen) {
+                $camiseta->imagen_trasera = 'data:image/jpeg;base64,' . $imagenTraseraBase64;
+            } else {
                 $imagenBase64 = base64_encode($camiseta->imagen);
                 $imagenDataUrl = 'data:image/jpeg;base64,' . $imagenBase64;
                 $camiseta->imagen = $imagenDataUrl;
             }
-        }
-
-        return $camisetasEnOferta;
+            return $camiseta;
+        });
     }
 
     public function obtenerCamisetaPorId($id)
@@ -47,7 +38,14 @@ class HomeModel extends Model
         $camiseta = $this->find($id);
 
         if ($camiseta) {
-            if ($camiseta->imagen) {
+            if ($camiseta->imagen && $camiseta->imagen_trasera) {
+                $imagenBase64 = base64_encode($camiseta->imagen);
+                $imagenTraseraBase64 = base64_encode($camiseta->imagen_trasera);
+                $imagenDataUrl = 'data:image/jpeg;base64,' . $imagenBase64;
+                $imagenTraseraDataUrl = 'data:image/jpeg;base64,' . $imagenTraseraBase64;
+                $camiseta->imagen = $imagenDataUrl;
+                $camiseta->imagen_trasera = $imagenTraseraDataUrl;
+            } else {
                 $imagenBase64 = base64_encode($camiseta->imagen);
                 $imagenDataUrl = 'data:image/jpeg;base64,' . $imagenBase64;
                 $camiseta->imagen = $imagenDataUrl;
@@ -55,6 +53,20 @@ class HomeModel extends Model
         }
 
         return $camiseta;
+    }
+
+    public function obtenerTallesDisponiblesConStock($camiseta)
+    {
+        $tallesDisponibles = [];
+
+        if ($camiseta->stock_talle_s > 0) $tallesDisponibles[] = ['talle' => 'S', 'stock' => $camiseta->stock_talle_s];
+        if ($camiseta->stock_talle_m > 0) $tallesDisponibles[] = ['talle' => 'M', 'stock' => $camiseta->stock_talle_m];
+        if ($camiseta->stock_talle_l > 0) $tallesDisponibles[] = ['talle' => 'L', 'stock' => $camiseta->stock_talle_l];
+        if ($camiseta->stock_talle_xl > 0) $tallesDisponibles[] = ['talle' => 'XL', 'stock' => $camiseta->stock_talle_xl];
+        if ($camiseta->stock_talle_xxl > 0) $tallesDisponibles[] = ['talle' => 'XXL', 'stock' => $camiseta->stock_talle_xxl];
+        if ($camiseta->stock_talle_xs > 0) $tallesDisponibles[] = ['talle' => 'XS', 'stock' => $camiseta->stock_talle_xs];
+
+        return $tallesDisponibles;
     }
 
     public function obtenerTodasLasCamisetas()

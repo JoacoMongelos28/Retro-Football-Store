@@ -57,6 +57,14 @@
                 </div>
 
                 <div>
+                    <label for="imagen_trasera">Imagen</label>
+                    <input type="file" name="imagen_trasera" id="imagen_trasera" accept="image/*">
+                    @error('imagen_trasera')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div>
                     <label for="estado">Estado</label>
                     <select name="estado" id="estado">
                         <option value="1" {{ old('estado') == 1 ? 'selected' : '' }}>Destacado</option>

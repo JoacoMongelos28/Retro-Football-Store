@@ -38,17 +38,20 @@ class CarritoController extends Controller
             $carritoObtenido = $this->carritoModel->crearCarrito($idUsuario);
 
             $talle = $request->input('talle');
-
             $cantidad = $request->input('cantidad');
+
+            $camiseta = $this->homeModel->obtenerCamisetaPorId($request->input('id'));
+            $stockDisponible = $camiseta ? $camiseta->{$talle} : 0;
 
             $validator = Validator::make($request->all(), [
                 'talle' => 'required',
-                'cantidad' => 'required|numeric|min:1',
+                'cantidad' => 'required|numeric|min:1|lte:' . $stockDisponible,
             ], [
                 'talle.required' => 'Debe seleccionar un talle antes de agregar al carrito.',
                 'cantidad.required' => 'Debe ingresar una cantidad.',
                 'cantidad.numeric' => 'La cantidad debe ser un número.',
                 'cantidad.min' => 'Debe agregar al menos una unidad.',
+                'cantidad.lte' => 'Solo hay ' . $stockDisponible . ' camisetas disponibles en el talle seleccionado.',
             ]);
 
             if ($validator->fails()) {
@@ -148,8 +151,20 @@ class CarritoController extends Controller
             return response()->json(['success' => false, 'message' => 'Producto no encontrado']);
         }
 
-        $carritoProducto->cantidad += $accion;
+        $stockDisponible = $request->input('stock');
+        $nuevaCantidad = $carritoProducto->cantidad + $accion;
+
+        if ($nuevaCantidad < 1) {
+            $nuevaCantidad = 1;
+        } elseif ($nuevaCantidad > $stockDisponible) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No puedes agregar más unidades de las disponibles en stock.'
+            ]);
+        }
+
         $carritoProducto->cantidad = max(1, $carritoProducto->cantidad);
+        $carritoProducto->cantidad = $nuevaCantidad;
         $carritoProducto->save();
 
         $carritoJoineado = $this->carritoProductoModel->joinearCarrito($carritoProducto);
