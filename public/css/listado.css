@@ -15,3 +15,22 @@ img {
     width: 200px;
     height: 200px;
 }
+
+.imagen-hover {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: auto;
+}
+
+.imagen-hover img {
+    display: block;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.imagen-hover .trasera {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}

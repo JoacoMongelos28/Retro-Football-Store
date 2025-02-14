@@ -47,7 +47,6 @@ class CarritoProductoModel extends Model
                 'camiseta.slug',
                 'carrito_camiseta.talle',
                 DB::raw('carrito_camiseta.cantidad * camiseta.precio as total'),
-                // Agregamos el stock disponible del talle seleccionado
                 DB::raw("CASE 
                 WHEN carrito_camiseta.talle = 'stock_talle_s' THEN camiseta.stock_talle_s
                 WHEN carrito_camiseta.talle = 'stock_talle_m' THEN camiseta.stock_talle_m
@@ -59,10 +58,8 @@ class CarritoProductoModel extends Model
             )->where('carrito_camiseta.carrito_id', $idCarrito)->get();
 
         foreach ($camisetas as $camiseta) {
-            // Normalizar el talle para que se vea sin el prefijo "stock_talle_"
             $camiseta->talle = str_replace('stock_talle_', '', $camiseta->talle);
 
-            // Convertir la imagen en base64 si es necesario
             if ($camiseta->imagen) {
                 $imagenBase64 = base64_encode($camiseta->imagen);
                 $imagenDataUrl = 'data:image/jpeg;base64,' . $imagenBase64;

@@ -15,7 +15,7 @@
         <nav>
             <div class="contenedor-nav">
                 <a href="/admin" class="logo-txt">
-                    <span class="joaquin">Retro</span><span class="mongelos">Store</span>
+                    <span class="retro">Retro</span><span class="store">Store</span>
                 </a>
                 <button class="menu-toggle" aria-label="Toggle menu">
                     <i class="fa-solid fa-bars"></i>

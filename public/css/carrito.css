@@ -7,3 +7,190 @@
 img {
     width: 100px;
 }
+
+.eliminar {
+    background: none;
+    border: none;
+    color: rgb(232 41 91);
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.eliminar:hover {
+    color: rgb(160, 9, 49);
+}
+
+.carrito-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.carrito-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    gap: 10px;
+}
+
+.carrito-img img {
+    width: 60px;
+    height: auto;
+    border-radius: 5px;
+}
+
+.carrito-info {
+    flex: 1;
+    margin-left: 10px;
+}
+
+.carrito-nombre {
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+}
+
+.carrito-talle {
+    font-size: 14px;
+    color: #666;
+}
+
+.camiseta-talle {
+    text-transform: uppercase;
+}
+
+.carrito-cantidad {
+    display: flex;
+}
+
+.carrito-cantidad button {
+    background: #ddd;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.carrito-cantidad input {
+    width: 50px;
+    text-align: center;
+    border: none;
+}
+
+.carrito-precio, .carrito-subtotal {
+    font-weight: bold;
+    width: 80px;
+    text-align: center;
+    color: #000000;
+}
+
+#contenedor-pagar {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: right;
+}
+
+#contenedor-pagar button {
+    background: rgb(232 41 91);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+#contenedor-pagar button:hover {
+    background:  rgb(80 89 223);
+}
+
+#totalPrecio {
+    font-size: 18px;
+}
+
+#mensaje-vacio {
+    font-size: 18px;
+}
+
+.titulo-txt {
+    margin-bottom: 20px;
+}
+
+.contenedor-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1rem 8rem;
+    background-color: #21212150;
+    position: absolute;
+    bottom: 0;
+}
+
+@media screen and (max-width: 767px) {
+    .contenedor-footer {
+        display: block;
+    }
+
+    .contenedor-principal {
+        width: 80%;
+    }
+
+    .carrito-img img {
+        width: 30px;
+    }
+
+    .carrito-nombre {
+        font-size: 12px;
+    }
+
+    .carrito-talle {
+        font-size: 10px;
+    }
+
+    .carrito-cantidad button {
+        padding: 3px 5px;
+    }
+
+    .carrito-cantidad {
+        padding-left: 15px;
+    }
+
+    .carrito-cantidad input {
+        width: 30px;
+    }
+
+    .carrito-precio, .carrito-subtotal {
+        font-size: 12px;
+    }
+
+    #contenedor-pagar {
+        gap: 10px;
+    }
+
+    #contenedor-pagar button {
+        padding: 5px 10px;
+        font-size: 14px;
+    }
+
+    #totalPrecio {
+        font-size: 14px;
+    }
+
+    #mensaje-vacio {
+        font-size: 14px;
+    }
+
+    .eliminar {
+        font-size: 16px;
+        padding-right: 5px;
+    }
+
+    .titulo-txt {
+        text-align: center;
+    }
+}

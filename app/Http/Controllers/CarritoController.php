@@ -51,7 +51,9 @@ class CarritoController extends Controller
                 'cantidad.required' => 'Debe ingresar una cantidad.',
                 'cantidad.numeric' => 'La cantidad debe ser un número.',
                 'cantidad.min' => 'Debe agregar al menos una unidad.',
-                'cantidad.lte' => 'Solo hay ' . $stockDisponible . ' camisetas disponibles en el talle seleccionado.',
+                'cantidad.lte' => $stockDisponible > 0 
+                    ? 'Solo hay ' . $stockDisponible . ' camisetas disponibles en el talle seleccionado.'
+                    : 'No hay stock disponible para el talle seleccionado.',
             ]);
 
             if ($validator->fails()) {
@@ -221,14 +223,12 @@ class CarritoController extends Controller
         $carritoJoineado = $this->carritoModel->joinearCarritoPorSuId($carrito->id);
         $carritoFinal = $this->carritoProductoModel->obtenerCamisetasAEliminar($carritoJoineado->first());
 
-        Log::info('Carrito final: ' . $carritoFinal);
-
         if (!$carritoFinal->isEmpty()) {
             $this->homeModel->actualizarStock($carritoFinal);
             $this->homeModel->enviarMail($carritoFinal, $usuario->email);
             $this->carritoModel->eliminarCarritoPorIdUsuario($usuarioId);
         }
 
-        return redirect('carrito')->with('exitoso', 'Pago exitoso');
+        return redirect('carrito')->with('exitoso', 'Pago exitoso, te enviamos un mail con los detalles de tu compra.');
     }
 }

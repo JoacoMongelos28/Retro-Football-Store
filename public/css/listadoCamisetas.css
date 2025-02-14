@@ -13,5 +13,108 @@
 
 img {
     width: 200px;
-    height: 200px;
+    height: 200px !important;
+}
+
+.imagen-hover {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.imagen-hover img {
+    display: block;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.imagen-hover .trasera {
+    position: absolute;
+    opacity: 0;
+}
+
+.camisetas-txt {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.camiseta {
+    border: 2px solid rgb(232 41 91);
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #ffffff;
+}
+
+.a-camiseta {
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.contenedor-btn-ver {
+    text-align: center;
+    margin-top: 10px;
+    background-color: rgb(80 89 223);
+    border-radius: 5px;
+    padding: 8px;
+    color: #ffffff;
+}
+
+.contenedor-btn-ver:hover {
+    background-color: rgb(232 41 91);
+}
+
+#precio {
+    margin-top: 5px;
+    font-weight: bold;
+    color: #00060c;
+}
+
+.nombre-camiseta {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #00060c;
+}
+
+.paginacion p {
+    display: none;
+}
+
+.paginacion {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+@media screen and (max-width: 1365px) {
+    .contenedor-camisetas {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .contenedor-principal {
+        padding-top: 80px;
+    }
+
+    .contenedor-camisetas-destacadas {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    img {
+        width: 100px;
+        height: 100px !important;
+    }
+
+    .camiseta {
+        padding: 10px;
+    }
+
+    .nombre-camiseta, #precio {
+        font-size: 12px;
+    }
+
+    .contenedor-btn-ver {
+        padding: 5px;
+        font-size: 10px;
+    }
 }

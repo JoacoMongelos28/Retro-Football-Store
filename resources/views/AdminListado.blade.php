@@ -30,8 +30,14 @@
             <section class="contenedor-camisetas">
                 @if (!empty($camisetas))
                     @foreach ($camisetas as $camiseta)
-                        <article>
-                            <img src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}">
+                        <article class="camiseta">
+                            <div class="imagen-hover">
+                                <img class="frontal" src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}">
+                                @if ($camiseta->imagen_trasera)
+                                    <img class="trasera" src="{{ $camiseta->imagen_trasera }}"
+                                        alt="{{ $camiseta->nombre }}">
+                                @endif
+                            </div>
                             <p>{{ $camiseta->nombre }}</p>
                             <p>{{ $camiseta->precio }}</p>
                             <a href="/admin/editar/{{ $camiseta->slug }}">Editar</a>
@@ -43,5 +49,30 @@
         </div>
     </div>
 </main>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('.camiseta').each(function() {
+        const trasera = $(this).find('.trasera');
+        
+        if (trasera.length > 0) {
+            $(this).find('.imagen-hover').hover(
+                function() {
+                    $(this).find('.frontal').css('opacity', '0');
+                    $(this).find('.trasera').css('opacity', '1');
+                },
+                function() {
+                    $(this).find('.frontal').css('opacity', '1');
+                    $(this).find('.trasera').css('opacity', '0');
+                }
+            );
+        } else {
+            $(this).find('.imagen-hover').off('mouseenter mouseleave');
+        }
+    });
+});
+</script>
 
 <x-footer></x-footer>

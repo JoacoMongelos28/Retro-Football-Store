@@ -13,6 +13,70 @@ body {
     font-weight: 400;
 }
 
+.contenedor-buscador {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.group {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 40px;
+    transition: width 0.4s ease-in-out;
+    background-color: #f3f3f4;
+    border-radius: 8px;
+}
+
+.group.expandido {
+    width: 300px;
+}
+
+.input {
+    width: 100%;
+    height: 40px;
+    padding: 0 1rem;
+    padding-left: 2.5rem;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: #0d0c22;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.input::placeholder {
+    color: #9e9ea7;
+}
+
+.input:focus,
+input:hover {
+    outline: none;
+    border-color: rgba(234, 76, 137, 0.4);
+    box-shadow: 0 0 0 4px rgb(234 76 137 / 10%);
+}
+
+.group.expandido .input {
+    opacity: 1;
+}
+
+.icon {
+    position: absolute;
+    left: 10px;
+    fill: #9e9ea7;
+    width: 20px;
+    height: 20px;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.contenedor-principal {
+    width: 80%;
+    margin: auto;
+    padding-top: 130px;
+}
+
 .contenedor-nav {
     align-items: center;
     background-color: #21212150;
@@ -40,6 +104,18 @@ body {
     font-size: 20px;
 }
 
+.retro {
+    color: rgb(210 84 117);
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.store {
+    color: rgb(80 89 223);
+    font-weight: 600;
+    font-size: 20px;
+}
+
 .contenedor-menu-nav {
     gap: 1.8rem;
     display: flex;
@@ -48,14 +124,6 @@ body {
 
 .menu-a {
     color: #ffffff;
-}
-
-.cv-a-txt {
-    background-color: rgb(232 41 91);
-    color: #ffffff;
-    border-radius: 2rem;
-    cursor: pointer;
-    padding: .7rem 4rem !important;
 }
 
 .menu-toggle {
@@ -75,7 +143,7 @@ body {
 }
 
 .footer {
-    background-color: #21212150;    margin-top: 15rem;
+    background-color: #21212150;
 }
 
 .contenedor-footer {
@@ -98,10 +166,25 @@ body {
     gap: 25px;
 }
 
-.linkedin, .github, .email {
+.linkedin,
+.github,
+.email {
     text-decoration: none;
     color: inherit;
     font-size: 2rem;
+}
+
+.cv {
+    background-color: rgb(232 41 91);
+    color: #ffffff;
+    border-radius: 2rem;
+    cursor: pointer;
+    padding: 0.3rem 2rem !important;
+    text-decoration: none;
+}
+
+.contenedor-carrito-menu {
+    display: none;
 }
 
 @media screen and (max-width: 1100px) {
@@ -158,5 +241,11 @@ body {
 
     .contenedor-principal-redes {
         margin-top: 10px;
+    }
+
+    .contenedor-carrito-menu {
+        display: flex;
+        align-items: center;
+        gap: 20px;
     }
 }
