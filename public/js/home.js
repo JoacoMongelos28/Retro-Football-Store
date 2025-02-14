@@ -10,10 +10,8 @@ function showSlide(index) {
         currentIndex = index;
     }
 
-    // Ocultar todas las imágenes
     slides.forEach(slide => slide.style.display = 'none');
 
-    // Mostrar la imagen actual
     slides[currentIndex].style.display = 'block';
 }
 
@@ -21,7 +19,6 @@ function moveSlide(step) {
     showSlide(currentIndex + step);
 }
 
-// Inicializar el slider
 document.addEventListener('DOMContentLoaded', function() {
     showSlide(currentIndex);
 });

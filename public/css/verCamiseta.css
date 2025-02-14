@@ -1,22 +1,21 @@
 .contenedor-principal {
-    width: 60%;
-    margin: auto;
-    padding-top: 120px;
+    width: 80%;
 }
 
 img {
-    width: 300px;
+    width: 450px;
+    height: 450px !important;
 }
 
 .contenedor-camiseta {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     margin-top: 20px;
 }
 
 .otros-productos-txt {
     text-align: center;
-    margin-top: 150px;
+    margin-top: 80px;
     margin-bottom: 50px;
 }
 
@@ -39,18 +38,13 @@ img {
 
 .camisetas-oferta {
     width: 200px;
-    height: 200px;
-}
-
-.contenedor {
-    position: relative;
-    display: inline-block;
+    height: 200px !important;
 }
 
 .lupa {
     position: absolute;
     width: 120px;
-    height: 120px;
+    height: 120px !important;
     border: 2px solid #000;
     background-repeat: no-repeat;
     pointer-events: none;
@@ -59,18 +53,345 @@ img {
 
 .miniaturas {
     display: flex;
-    gap: 5px;
-    margin-top: 10px;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
+    gap: 20px;
 }
 
 .miniatura {
-    width: 50px; 
-    height: 50px;
+    width: 120px; 
+    height: 120px !important;
     cursor: pointer;
-    border: 2px solid transparent;
     transition: border 0.2s ease-in-out;
 }
 
 .miniatura:hover {
     border: 2px solid #000;
+}
+
+.imagen-hover {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: auto !important;
+}
+
+.imagen-hover img {
+    display: block;
+    transition: opacity 0.3s ease-in-out;
+    height: 200px !important;
+    width: 200px;
+}
+
+.imagen-hover .trasera {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+.contenedor-imagen {
+    display: flex;
+}
+
+.btn-agregar {
+    padding: 10px 25px;
+    background-color: rgb(232 41 91);
+    border: none;
+    color: #ffffff;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.btn-agregar:hover {
+    background-color: rgb(80 89 223);
+}
+
+.contenedor-talles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.talle-btn {
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.talle-btn input {
+    display: none;
+}
+
+.talle-btn:hover {
+    background-color: rgb(80 89 223);
+}
+
+.talle-btn.disabled {
+    background-color: #919191;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+
+.mensaje-sin-stock {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.contenedor-cantidad {
+    display: flex;
+}
+
+.btn-cantidad {
+    width: 25px;
+    font-size: 10px;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-cantidad:hover {
+    background-color: #d9d9d9;
+}
+
+.input-cantidad {
+    width: 50px;
+    text-align: center;
+    border: none;
+    padding-left: 15px;
+    color: #000000;
+}
+
+.decrementar {
+    border-right: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    color: #000000;
+}
+
+.incrementar {
+    border-left: 1px solid #ccc;
+    border-radius: 0 5px 5px 0;
+    color: #000000;
+}
+
+.contenedor-botones-agregar {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.talles-txt {
+    margin: 10px 0;
+}
+
+#precio {
+    font-weight: bold;
+    margin: 10px 0;
+    color: #ffffff;
+}
+
+.nombre-camiseta {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.contenedor-info {
+    width: 35%;
+}
+
+.descripcion-txt {
+    width: 85%;
+    margin-top: 20px;
+}
+
+.camiseta {
+    border: 2px solid rgb(232 41 91);
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #ffffff;
+}
+
+.a-camiseta {
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.contenedor-btn-ver {
+    text-align: center;
+    margin-top: 10px;
+    background-color: rgb(80 89 223);
+    border-radius: 5px;
+    padding: 8px;
+    color: #ffffff;
+}
+
+.contenedor-btn-ver:hover {
+    background-color: rgb(232 41 91);
+}
+
+.precio-oferta {
+    font-weight: bold;
+    color: #000000;
+}
+
+.nombre-camiseta-oferta {
+    font-weight: bold;
+    color: #000000;
+    margin: 5px 0;
+}
+
+@media screen and (max-width: 1024px) {
+    .contenedor-camiseta {
+        display: block;
+        margin: 0;
+    }
+
+    .contenedor-imagen {
+        justify-content: center;
+    }
+
+    .contenedor-info {
+        width: 100%;
+    }
+
+    .nombre-camiseta {
+        margin-top: 30px;
+    }
+
+    .contenedor-talles {
+        gap: 20px;
+    }
+
+    .talle-btn {
+        padding: 10px 20px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    img {
+        width: 300px;
+        height: 300px !important;
+    }
+
+    .miniatura {
+        width: 80px;
+        height: 80px !important;
+    }
+
+    .camiseta {
+        padding: 10px;
+    }
+
+    .nombre-camiseta, #precio {
+        font-size: 12px;
+    }
+
+    .contenedor-btn-ver {
+        padding: 5px;
+        font-size: 10px;
+    }
+}
+
+@media screen and (max-width: 560px) {
+    img {
+        width: 250px;
+        height: 250px !important;
+    }
+
+    .miniatura {
+        width: 80px;
+        height: 80px !important;
+    }
+
+    .contenedor-info {
+        width: 100%;
+    }
+
+    .nombre-camiseta {
+        margin-top: 20px;
+    }
+
+    .talle-btn {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .talles-txt {
+        margin-bottom: 15px;
+    }
+
+    .btn-agregar {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .contenedor-camiseta {
+        display: block;
+        margin: 0;
+    }
+
+    .contenedor-info {
+        width: 100%;
+    }
+
+    .contenedor-imagen {
+        flex-direction: row-reverse;
+    }    
+
+    img {
+        width: 230px;
+        height: 230px !important;
+    }
+
+    .miniaturas {
+        padding: 0  0 0 20px;
+    }
+
+    .miniatura {
+        width: 70px;
+        height: 70px !important;
+    }
+
+    .nombre-camiseta {
+        margin-top: 20px;
+    }
+
+    .talle-btn {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .talles-txt {
+        margin-bottom: 15px;
+    }
+
+    .btn-agregar {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    .imagen-hover img {
+        height: 100px !important;
+        width: 100px;
+    }
+
+    .contenedor-btn-ver {
+        padding: 5px;
+        font-size: 10px;
+    }
 }

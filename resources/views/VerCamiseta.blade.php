@@ -6,72 +6,95 @@
 
 <main>
     <div class="contenedor-principal">
-        <div>
-            <h1>{{ $camisetaObtenida->nombre }}</h1>
-        </div>
-
         <div class="contenedor-camiseta">
             <section>
                 <article class="contenedor-imagen">
-                    <img src="{{ $camisetaObtenida->imagen }}" alt="{{ $camisetaObtenida->nombre }}" id="imagen-principal"
-                        title="{{ $camisetaObtenida->nombre }}">
-                    <div class="lupa" id="lupa"></div>
-
                     <div class="miniaturas">
-                        <img src="{{ $camisetaObtenida->imagen }}" alt="{{ $camisetaObtenida->nombre }}"
-                            class="miniatura" onclick="cambiarImagen('{{ $camisetaObtenida->imagen }}')">
-                        <img src="{{ $camisetaObtenida->imagen_trasera }}" alt="{{ $camisetaObtenida->nombre }}"
-                            class="miniatura" onclick="cambiarImagen('{{ $camisetaObtenida->imagen_trasera }}')">
+                        <img src="{{ $camisetaObtenida->imagen }}" alt="{{ $camisetaObtenida->nombre }}" class="miniatura"
+                            onclick="cambiarImagen('{{ $camisetaObtenida->imagen }}')">
+                        @if ($camisetaObtenida->imagen_trasera)
+                            <img src="{{ $camisetaObtenida->imagen_trasera }}" alt="{{ $camisetaObtenida->nombre }}"
+                                class="miniatura" onclick="cambiarImagen('{{ $camisetaObtenida->imagen_trasera }}')">
+                        @endif
                     </div>
+
+                    <img src="{{ $camisetaObtenida->imagen }}" alt="{{ $camisetaObtenida->nombre }}"
+                        id="imagen-principal" title="{{ $camisetaObtenida->nombre }}">
+                    <div class="lupa" id="lupa"></div>
                 </article>
             </section>
 
-            <section>
+            <section class="contenedor-info">
                 <article>
-                    <h3>{{ $camisetaObtenida->nombre }}</h3>
-                    <p>{{ $camisetaObtenida->descripcion }}</p>
-                    <p id="precio">{{ $camisetaObtenida->precio }}</p>
-                    <p id="stock-mensaje"></p>
+                    <h2 class="nombre-camiseta text-2xl">{{ $camisetaObtenida->nombre }}</h2>
+                    <p id="precio">${{ $camisetaObtenida->precio }}</p>
 
-                    @if (count($tallesDisponibles) > 0)
-                        <select name="talle" id="talle">
-                            <option value="">Talles disponibles</option>
-                            @foreach ($tallesDisponibles as $talle)
-                                <option value="stock_talle_{{ strtolower($talle['talle']) }}"
-                                    data-stock="{{ $talle['stock'] }}">{{ $talle['talle'] }}
-                                </option>
+                    <div>
+                        <p class="talles-txt">Talles disponibles:</p>
+                        <div class="contenedor-talles">
+                            @php $hayStock = false; @endphp
+
+                            @foreach (['xs', 's', 'm', 'l', 'xl', 'xxl'] as $talle)
+                                @php
+                                    $stock = $camisetaObtenida["stock_talle_$talle"];
+                                    $disabled = $stock == 0 ? 'disabled' : '';
+                                    if ($stock > 0) {
+                                        $hayStock = true;
+                                    }
+                                @endphp
+                                <label class="talle-btn {{ $stock == 0 ? 'disabled' : '' }}">
+                                    <input type="radio" name="talle" id="talle_{{ $talle }}"
+                                        value="stock_talle_{{ $talle }}" data-stock="{{ $stock }}"
+                                        {{ $disabled }}>
+                                    {{ strtoupper($talle) }}
+                                </label>
                             @endforeach
-                        </select>
-                        <input type="number" name="cantidad" id="cantidad" style="display: none;"
-                            placeholder="Cantidad de camisetas">
-                        <button class="btn-agregar" data-id="{{ $camisetaObtenida->id }}">🛒 Agregar al
-                            carrito</button>
-                    @else
-                        <p style="color: red">No hay talles disponibles para esta camiseta en este momento.</p>
-                    @endif
+                        </div>
 
+                        @if (!$hayStock)
+                            <p class="mensaje-sin-stock">No hay stock disponible para esta camiseta.</p>
+                        @endif
+                        <p id="stock-mensaje"></p>
+                        <div class="contenedor-botones-agregar" style="display: none;">
+                            <div class="contenedor-cantidad">
+                                <button class="btn-cantidad decrementar">−</button>
+                                <input type="number" name="cantidad" id="cantidad" min="1" value="1"
+                                    class="input-cantidad" readonly>
+                                <button class="btn-cantidad incrementar">+</button>
+                            </div>
+                            <div>
+                                <button class="btn-agregar" data-id="{{ $camisetaObtenida->id }}">AGREGAR AL
+                                    CARRITO</button>
+                            </div>
+                        </div>
+                    </div>
                     <p id="mensaje-error"></p>
+                    <p class="descripcion-txt">{{ $camisetaObtenida->descripcion }}</p>
                 </article>
             </section>
         </div>
 
         <aside>
             <div>
-                <h2 class="otros-productos-txt">Otros productos destacados</h2>
+                <h2 class="otros-productos-txt text-2xl">Otros productos destacados</h2>
             </div>
 
             <div class="slider-container">
                 <button class="slider-prev" onclick="moveSlide(-1)">&#10094;</button>
 
                 @foreach ($camisetasEnOferta as $index => $camiseta)
-                    <article class="slide {{ $index === 0 ? 'active' : '' }}">
-                        <a href="/home/camiseta/{{ $camiseta->slug }}"><img class="camisetas-oferta"
-                                src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}"
-                                title="{{ $camiseta->nombre }}">
-                            <p>{{ $camiseta->nombre }}</p>
-                            Ver
-
-                            <p id="precio">{{ $camiseta->precio }}</p>
+                    <article class="slide {{ $index === 0 ? 'active' : '' }} camiseta">
+                        <a href="/home/camiseta/{{ $camiseta->slug }}" class="a-camiseta">
+                            <div class="imagen-hover">
+                                <img class="frontal" src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}">
+                                @if ($camiseta->imagen_trasera)
+                                    <img class="trasera" src="{{ $camiseta->imagen_trasera }}"
+                                        alt="{{ $camiseta->nombre }}">
+                                @endif
+                            </div>
+                            <p class="nombre-camiseta-oferta">{{ $camiseta->nombre }}</p>
+                            <p class="precio-oferta">${{ $camiseta->precio }}</p>
+                            <div class="contenedor-btn-ver">VER</div>
                         </a>
                     </article>
                 @endforeach
@@ -80,12 +103,72 @@
             </div>
         </aside>
     </div>
+    <input type="hidden" id="idUsuario" value="{{ $usuario }}">
 </main>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script src="{{ asset('js/ver.js') }}"></script>
+
 <script>
+    const talleRadio = $('#talle');
+
+    if (talleRadio) {
+
+        $('input[name="talle"]').change(function() {
+            let stock = $(this).data('stock');
+            $('.contenedor-botones-agregar').show();
+            $('#stock-mensaje').text(stock ? "Stock disponible: " + stock : "No hay stock disponible.");
+            $('.talle-btn').css('background-color', '');
+            $(this).parent().css('background-color', 'rgb(232, 41, 91)');
+        });
+    }
+
+    $(".incrementar, .decrementar").click(function() {
+        let cantidadInput = $("#cantidad");
+        let cantidad = parseInt(cantidadInput.val()) || 1;
+        let accion = $(this).hasClass("incrementar") ? 1 : -1;
+
+        cantidad += accion;
+
+        if (cantidad < 1) {
+            cantidad = 1;
+        }
+
+        if (cantidad > 10) {
+            cantidad = 10;
+        }
+
+        cantidadInput.val(cantidad);
+    });
+
+    $(document).ready(function() {
+        $('.camiseta').each(function() {
+            const trasera = $(this).find('.trasera');
+
+            if (trasera.length > 0) {
+                $(this).find('.imagen-hover').hover(
+                    function() {
+                        $(this).find('.frontal').css('opacity', '0');
+                        $(this).find('.trasera').css('opacity', '1');
+                    },
+                    function() {
+                        $(this).find('.frontal').css('opacity', '1');
+                        $(this).find('.trasera').css('opacity', '0');
+                    }
+                );
+            } else {
+                $(this).find('.imagen-hover').off('mouseenter mouseleave');
+            }
+        });
+
+        const idUsuario = $('#idUsuario').val();
+
+        if (idUsuario) {
+            localStorage.removeItem("url_previa");
+        }
+    });
+
     function cambiarImagen(nuevaImagen) {
         document.getElementById("imagen-principal").src = nuevaImagen;
     }
@@ -101,15 +184,18 @@
                 width,
                 height
             } = imagen.getBoundingClientRect();
-            const x = ((e.clientX - left) / width) * 100;
-            const y = ((e.clientY - top) / height) * 100;
+
+            const x = ((e.clientX - left + window.scrollX) / width) * 100;
+            const y = ((e.clientY - top + window.scrollY) / height) * 100;
 
             lupa.style.display = "block";
+
             lupa.style.backgroundImage = `url(${imagen.src})`;
             lupa.style.backgroundSize = `${width * 2}px ${height * 2}px`;
             lupa.style.backgroundPosition = `${x}% ${y}%`;
-            lupa.style.left = `${e.clientX - 60}px`;
-            lupa.style.top = `${e.clientY - 10}px`;
+
+            lupa.style.left = `${e.clientX + window.scrollX - 60}px`;
+            lupa.style.top = `${e.clientY + window.scrollY - 60}px`;
         });
 
         imagen.addEventListener("mouseleave", function() {
@@ -122,8 +208,10 @@
             boton.addEventListener("click", function() {
                 const camisetaId = boton.getAttribute("data-id");
                 const cantidad = document.getElementById("cantidad").value;
-                const talle = document.getElementById("talle").value;
+                const talleSeleccionado = document.querySelector('input[name="talle"]:checked');
                 const url = encodeURIComponent(window.location.href);
+                const talle = talleSeleccionado.value;
+                const stock = talleSeleccionado.getAttribute("data-stock");
 
                 $.ajax({
                     url: '/agregar',
@@ -136,10 +224,14 @@
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
-                        document.querySelector(".carrito span").textContent =
-                            response.carrito.cantidad;
-                        document.querySelector(".carrito p").textContent =
-                            `$${response.carrito.total}`;
+                        document.querySelectorAll(".carrito span").forEach(span => {
+                            span.textContent = response.carrito.cantidad;
+                        });
+
+                        document.querySelectorAll(".carrito p").forEach(p => {
+                            p.textContent = `$${response.carrito.total}`;
+                        });
+
                         mostrarMensajeExitoso(
                             "Camiseta agregada al carrito correctamente");
                     },
@@ -173,26 +265,6 @@
             mensajeError.style.fontWeight = "bold";
             mensajeError.style.marginTop = "10px";
             mensajeError.textContent = mensaje;
-        }
-    });
-
-    document.getElementById("talle").addEventListener("change", function() {
-        const talle = this.value;
-        const cantidadInput = document.getElementById("cantidad");
-        const stockMensaje = document.getElementById('stock-mensaje');
-        var selectedOption = this.options[this.selectedIndex];
-        var stock = selectedOption.getAttribute('data-stock');
-
-        if (talle) {
-            cantidadInput.style.display = "block";
-        } else {
-            cantidadInput.style.display = "none";
-        }
-
-        if (stock) {
-            stockMensaje.textContent = "Stock disponible: " + stock;
-        } else {
-            stockMensaje.textContent = "No hay stock disponible.";
         }
     });
 </script>

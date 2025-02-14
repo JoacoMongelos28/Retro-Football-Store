@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Mail\CompraMail;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
 
@@ -16,19 +15,15 @@ class HomeModel extends Model
     {
         $camisetasDestacadas = $this->where('estado', 1)->get();
 
-        $camisetasDestacadas = $camisetasDestacadas->shuffle()->take(12);
+        $camisetasDestacadas = $camisetasDestacadas->take(12);
 
         return $camisetasDestacadas->map(function ($camiseta) {
-            if ($camiseta->imagen && $camiseta->imagen_trasera) {
-                $imagenBase64 = base64_encode($camiseta->imagen);
-                $imagenTraseraBase64 = base64_encode($camiseta->imagen_trasera);
-                $camiseta->imagen = 'data:image/jpeg;base64,' . $imagenBase64;
-                $camiseta->imagen_trasera = 'data:image/jpeg;base64,' . $imagenTraseraBase64;
-            } else {
-                $imagenBase64 = base64_encode($camiseta->imagen);
-                $imagenDataUrl = 'data:image/jpeg;base64,' . $imagenBase64;
-                $camiseta->imagen = $imagenDataUrl;
+            $camiseta->imagen = $this->convertirImagenABase64($camiseta->imagen);
+
+            if ($camiseta->imagen_trasera) {
+                $camiseta->imagen_trasera = $this->convertirImagenABase64($camiseta->imagen_trasera);
             }
+
             return $camiseta;
         });
     }
@@ -38,17 +33,10 @@ class HomeModel extends Model
         $camiseta = $this->find($id);
 
         if ($camiseta) {
-            if ($camiseta->imagen && $camiseta->imagen_trasera) {
-                $imagenBase64 = base64_encode($camiseta->imagen);
-                $imagenTraseraBase64 = base64_encode($camiseta->imagen_trasera);
-                $imagenDataUrl = 'data:image/jpeg;base64,' . $imagenBase64;
-                $imagenTraseraDataUrl = 'data:image/jpeg;base64,' . $imagenTraseraBase64;
-                $camiseta->imagen = $imagenDataUrl;
-                $camiseta->imagen_trasera = $imagenTraseraDataUrl;
-            } else {
-                $imagenBase64 = base64_encode($camiseta->imagen);
-                $imagenDataUrl = 'data:image/jpeg;base64,' . $imagenBase64;
-                $camiseta->imagen = $imagenDataUrl;
+            $camiseta->imagen = $this->convertirImagenABase64($camiseta->imagen);
+
+            if ($camiseta->imagen_trasera) {
+                $camiseta->imagen_trasera = $this->convertirImagenABase64($camiseta->imagen_trasera);
             }
         }
 
@@ -71,12 +59,15 @@ class HomeModel extends Model
 
     public function obtenerTodasLasCamisetas()
     {
-        $camisetas = $this->paginate(1);
+        $camisetas = $this->paginate(12);
 
         $camisetas->getCollection()->transform(function ($camiseta) {
-            if ($camiseta->imagen) {
-                $camiseta->imagen = 'data:image/jpeg;base64,' . base64_encode($camiseta->imagen);
+            $camiseta->imagen = $this->convertirImagenABase64($camiseta->imagen);
+
+            if ($camiseta->imagen_trasera) {
+                $camiseta->imagen_trasera = $this->convertirImagenABase64($camiseta->imagen_trasera);
             }
+
             return $camiseta;
         });
 
@@ -89,10 +80,12 @@ class HomeModel extends Model
             ->inRandomOrder()
             ->get()
             ->map(function ($camiseta) {
-                if ($camiseta->imagen) {
-                    $imagenBase64 = base64_encode($camiseta->imagen);
-                    $camiseta->imagen = 'data:image/jpeg;base64,' . $imagenBase64;
+                $camiseta->imagen = $this->convertirImagenABase64($camiseta->imagen);
+
+                if ($camiseta->imagen_trasera) {
+                    $camiseta->imagen_trasera = $this->convertirImagenABase64($camiseta->imagen_trasera);
                 }
+    
                 return $camiseta;
             });
     }
@@ -102,23 +95,17 @@ class HomeModel extends Model
         foreach ($carrito as $camiseta) {
             $camisetaModel = $this->find($camiseta->id);
 
-            if ($camiseta->talle === 'stock_talle_s') {
-                $camisetaModel->stock_talle_s -= $camiseta->cantidad;
-                $camisetaModel->save();
-            } else if ($camiseta->talle === 'stock_talle_m') {
-                $camisetaModel->stock_talle_m -= $camiseta->cantidad;
-                $camisetaModel->save();
-            } else if ($camiseta->talle === 'stock_talle_l') {
-                $camisetaModel->stock_talle_l -= $camiseta->cantidad;
-                $camisetaModel->save();
-            } else if ($camiseta->talle === 'stock_talle_xl') {
-                $camisetaModel->stock_talle_xl -= $camiseta->cantidad;
-                $camisetaModel->save();
-            } else if ($camiseta->talle === 'stock_talle_xxl') {
-                $camisetaModel->stock_talle_xxl -= $camiseta->cantidad;
-                $camisetaModel->save();
-            } else if ($camiseta->talle === 'stock_talle_xs') {
-                $camisetaModel->stock_talle_xs -= $camiseta->cantidad;
+            $talles = [
+                'stock_talle_s' => 'stock_talle_s',
+                'stock_talle_m' => 'stock_talle_m',
+                'stock_talle_l' => 'stock_talle_l',
+                'stock_talle_xl' => 'stock_talle_xl',
+                'stock_talle_xxl' => 'stock_talle_xxl',
+                'stock_talle_xs' => 'stock_talle_xs',
+            ];
+
+            if (isset($talles[$camiseta->talle])) {
+                $camisetaModel->{$talles[$camiseta->talle]} -= $camiseta->cantidad;
                 $camisetaModel->save();
             } else {
                 return false;
@@ -131,21 +118,45 @@ class HomeModel extends Model
         foreach ($productos as $producto) {
             $producto->imagen = 'data:image/jpeg;base64,' . base64_encode($producto->imagen);
 
-            if ($producto->talle === 'stock_talle_s') {
-                $producto->talle = 'S';
-            } else if ($producto->talle === 'stock_talle_m') {
-                $producto->talle = 'M';
-            } else if ($producto->talle === 'stock_talle_l') {
-                $producto->talle = 'L';
-            } else if ($producto->talle === 'stock_talle_xl') {
-                $producto->talle = 'XL';
-            } else if ($producto->talle === 'stock_talle_xxl') {
-                $producto->talle = 'XXL';
-            } else if ($producto->talle === 'stock_talle_xs') {
-                $producto->talle = 'XS';
+            $talles = [
+                'stock_talle_s' => 'S',
+                'stock_talle_m' => 'M',
+                'stock_talle_l' => 'L',
+                'stock_talle_xl' => 'XL',
+                'stock_talle_xxl' => 'XXL',
+                'stock_talle_xs' => 'XS',
+            ];
+
+            if (isset($talles[$producto->talle])) {
+                $producto->talle = $talles[$producto->talle];
             }
         }
 
         Mail::to($email)->send(new CompraMail($productos));
+    }
+
+    public function obtenerCamisetasPorFiltro($filtro)
+    {
+        $camisetas = $this->where('nombre', 'like', '%' . $filtro . '%')->paginate(12);
+
+        $camisetas->getCollection()->transform(function ($camiseta) {
+            $camiseta->imagen = $this->convertirImagenABase64($camiseta->imagen);
+
+            if ($camiseta->imagen_trasera) {
+                $camiseta->imagen_trasera = $this->convertirImagenABase64($camiseta->imagen_trasera);
+            }
+
+            return $camiseta;
+        });
+
+        return $camisetas;
+    }
+
+    private function convertirImagenABase64($imagen)
+    {
+        if ($imagen && !preg_match('/^data:image\/(jpeg|png|gif);base64,/', $imagen)) {
+            return 'data:image/jpeg;base64,' . base64_encode($imagen);
+        }
+        return $imagen;
     }
 }

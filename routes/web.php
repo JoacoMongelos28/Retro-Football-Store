@@ -51,4 +51,4 @@ Route::get('cerrar-sesion', [LoginController::class, 'cerrarSesion']);
 
 Route::get('admin/cerrar-sesion', [LoginController::class, 'cerrarSesion']);
 
-Route::get('camisetas', [HomeController::class, 'listadoDeCamisetas']);
+Route::get('camisetas/{filtro?}', [HomeController::class, 'listadoDeCamisetas']);

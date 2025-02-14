@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\HomeModel;
 use App\Models\CarritoProductoModel;
 use App\Models\CarritoModel;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -83,16 +84,26 @@ class HomeController extends Controller
         if (!is_numeric($camiseta->id) || $camiseta->id <= 0) {
             return redirect('home')->with('error', 'El ID de la camiseta no es válido');
         }
-
+        
+        $data['usuario'] = session('usuarioId');
         $data['camisetaObtenida'] = $this->homeModel->obtenerCamisetaPorId($camiseta->id);
         $data['tallesDisponibles'] = $this->homeModel->obtenerTallesDisponiblesConStock($data['camisetaObtenida']);
         $data['camisetasEnOferta'] = $this->homeModel->obtenerCamisetasEnOfertaDesordenadas();
         return view('VerCamiseta', $data);
     }
 
-    public function listadoDeCamisetas()
+    public function listadoDeCamisetas($filtro = null)
     {
-        $data['camisetas'] = $this->homeModel->obtenerTodasLasCamisetas();
-        return view('ListadoCamisetas', $data);
+        $data['filtro'] = str_replace('-', ' ' , $filtro);
+
+        if ($data['filtro']) {
+            $data['camisetasFiltradas'] = $this->homeModel->obtenerCamisetasPorFiltro($data['filtro']);
+            $data['camisetas'] = $data['camisetasFiltradas']->isEmpty() ? $this->homeModel->obtenerTodasLasCamisetas() : $data['camisetasFiltradas'];
+        } else {
+            $data['camisetas'] = $this->homeModel->obtenerTodasLasCamisetas();
+            $data['camisetasFiltradas'] = null;
+        }
+
+        return view('listadoCamisetas', $data);
     }
 }

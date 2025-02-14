@@ -67,10 +67,6 @@
     document.addEventListener("DOMContentLoaded", function() {
         const redirectUrl = localStorage.getItem("url_previa") || "/home";
         document.getElementById("redirect").value = redirectUrl;
-
-        document.querySelector("form").addEventListener("submit", function() {
-            localStorage.removeItem("url_previa");
-        });
     });
 </script>
 

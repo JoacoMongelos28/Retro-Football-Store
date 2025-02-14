@@ -44,6 +44,12 @@ class AdminModel extends Model
                 $imagenDataUrl = 'data:image/jpeg;base64,' . $imagenBase64;
                 $camiseta->imagen = $imagenDataUrl;
             }
+
+            if ($camiseta->imagen_trasera) {
+                $imagenTraseraBase64 = base64_encode($camiseta->imagen_trasera);
+                $imagenTraseraDataUrl = 'data:image/jpeg;base64,' . $imagenTraseraBase64;
+                $camiseta->imagen_trasera = $imagenTraseraDataUrl;
+            }
         }
     
         return $camisetas;
