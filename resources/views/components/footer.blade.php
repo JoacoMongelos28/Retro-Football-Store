@@ -1,5 +1,5 @@
 <footer class="footer">
-    <div class="contenedor-footer fade-out-on-scroll">
+    <div class="contenedor-footer">
         <div class="contenedor-full-nombre">
             <span class="joaquin">Joaquin</span><span class="mongelos">Mongelos</span>
         </div>

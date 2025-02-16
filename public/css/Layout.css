@@ -13,6 +13,17 @@ body {
     font-weight: 400;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
 .contenedor-buscador {
     display: flex;
     align-items: center;
@@ -143,7 +154,9 @@ input:hover {
 }
 
 .footer {
-    background-color: #21212150;
+    position: relative;
+    width: 100%;
+    padding-bottom: 2rem;
 }
 
 .contenedor-footer {
@@ -152,7 +165,9 @@ input:hover {
     justify-content: space-between;
     width: 100%;
     padding: 1rem 8rem;
-    margin-top: 6rem;
+    position: absolute;
+    bottom: 0;
+    background-color: #21212150;
 }
 
 .contenedor-principal-redes {
@@ -187,6 +202,10 @@ input:hover {
     display: none;
 }
 
+.contenedor-buscador-mobile {
+    display: none;
+}
+
 @media screen and (max-width: 1100px) {
     .menu-toggle {
         display: block;
@@ -214,7 +233,7 @@ input:hover {
     }
 
     .contenedor-nav {
-        padding: 1rem 2rem;
+        padding: 10px;
     }
 
     .joaquin {
@@ -225,14 +244,9 @@ input:hover {
         font-size: 14px;
     }
 
-    .footer {
-        margin-top: 7rem;
-    }
-
     .contenedor-footer {
         display: block;
         margin: 0;
-        padding: 0;
     }
 
     .contenedor-full-nombre {
@@ -246,6 +260,44 @@ input:hover {
     .contenedor-carrito-menu {
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 10px;
+    }
+
+    .carrito {
+        gap: 4px;
+    }
+
+    .retro {
+        font-size: 14px;
+    }
+
+    .store {
+        font-size: 14px;
+    }
+
+    .contenedor-buscador-mobile {
+        display: block;
+    }
+
+    .icon {
+        width: 10px;
+        height: 10px;
+        left: 10px;
+        bottom: 9px;
+    }
+
+    .group {
+        width: 30px;
+    }
+
+    .input {
+        height: 30px;
+        font-size: 12px;
+        padding: 0;
+        padding-left: 1.8rem;
+    }
+
+    .group.expandido {
+        width: 180px;
     }
 }

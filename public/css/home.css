@@ -21,9 +21,29 @@ img {
 
 .slider-container {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-top: 30px;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 100px;
+    margin-top: 20px;
+}
+
+.slider-wrapper {
+    width: 80%;
+    overflow: hidden;
+}
+
+.slider-track {
+    display: flex;
+    gap: 15px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.slide {
+    min-width: 250px;
+    max-width: 250px;
 }
 
 .slider-prev,
@@ -34,7 +54,28 @@ img {
     font-size: 24px;
     cursor: pointer;
     padding: 10px;
+    position: absolute;
+    top: 50%;
     transform: translateY(-50%);
+    z-index: 10;
+}
+
+.slider-prev {
+    left: 10px;
+}
+
+.slider-next {
+    right: 10px;
+}
+
+.frontal {
+    width: 150px;
+    height: 150px !important;
+}
+
+.trasera {
+    width: 150px;
+    height: 150px !important;
 }
 
 .imagen-hover {
