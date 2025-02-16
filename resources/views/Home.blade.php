@@ -52,24 +52,29 @@
 
     <aside class="slider-container">
         <button class="slider-prev" onclick="moveSlide(-1)">&#10094;</button>
-
-        @foreach ($camisetasEnOferta as $index => $camiseta)
-            <article class="slide {{ $index === 0 ? 'active' : '' }} camiseta">
-                <a href="/home/camiseta/{{ $camiseta->slug }}" class="a-camiseta">
-                    <div class="imagen-hover">
-                        <img class="frontal" src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}">
-                        @if ($camiseta->imagen_trasera)
-                            <img class="trasera" src="{{ $camiseta->imagen_trasera }}" alt="{{ $camiseta->nombre }}">
-                        @endif
-                    </div>
-                    <p class="nombre-camiseta">{{ $camiseta->nombre }}</p>
-                    <p id="precio">${{ $camiseta->precio }}</p>
-                    <div class="contenedor-btn-ver">VER</div></a>
-            </article>
-        @endforeach
-
+    
+        <div class="slider-wrapper">
+            <div class="slider-track">
+                @foreach ($camisetasEnOferta as $camiseta)
+                    <article class="slide camiseta">
+                        <a href="/home/camiseta/{{ $camiseta->slug }}" class="a-camiseta">
+                            <div class="imagen-hover">
+                                <img class="frontal" src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}">
+                                @if ($camiseta->imagen_trasera)
+                                    <img class="trasera" src="{{ $camiseta->imagen_trasera }}" alt="{{ $camiseta->nombre }}">
+                                @endif
+                            </div>
+                            <p class="nombre-camiseta">{{ $camiseta->nombre }}</p>
+                            <p id="precio">${{ $camiseta->precio }}</p>
+                            <div class="contenedor-btn-ver">VER</div>
+                        </a>
+                    </article>
+                @endforeach
+            </div>
+        </div>
+    
         <button class="slider-next" onclick="moveSlide(1)">&#10095;</button>
-    </aside>
+    </aside>    
     </div>
 </main>
 

@@ -7,7 +7,7 @@
 
 <main>
     <div class="contenedor-principal">
-        <h1 class="titulo-txt">Carrito de Compras</h1>
+        <h1 class="titulo-txt text-3xl">Carrito de Compras</h1>
 
         @if ($carrito && count($carrito) > 0)
         <div class="carrito-container">
@@ -20,6 +20,7 @@
                         <a href="/home/camiseta/{{ $camiseta->slug }}" class="carrito-nombre">{{ $camiseta->nombre }}</a>
                         <p class="carrito-talle">Talle: <span class="camiseta-talle">{{ $camiseta->talle }}</span></p>
                     </div>
+                    <div class="contenedor-info-carrito">
                     <div class="carrito-cantidad">
                         <button class="decrementar" data-id="{{ $camiseta->id }}">-</button>
                         <input type="number" value="{{ $camiseta->cantidad }}" id="cantidad-{{ $camiseta->id }}" readonly>
@@ -27,7 +28,8 @@
                     </div>
                     <div class="carrito-precio">${{ $camiseta->precio }}</div>
                     <div class="carrito-subtotal" id="total-{{ $camiseta->id }}">${{ $camiseta->total }}</div>
-                    <div class="carrito-eliminar">
+                    
+                </div><div class="carrito-eliminar">
                         <button class="eliminar" data-id="{{ $camiseta->id }}">
                             <i class="fa-solid fa-xmark"></i>
                         </button>

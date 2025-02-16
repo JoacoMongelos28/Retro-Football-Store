@@ -33,12 +33,12 @@ img {
     background: #f9f9f9;
     padding: 10px;
     border-radius: 5px;
-    gap: 10px;
+    gap: 5px;
 }
 
 .carrito-img img {
     width: 60px;
-    height: auto;
+    height: 60px !important;
     border-radius: 5px;
 }
 
@@ -71,12 +71,15 @@ img {
     border: none;
     padding: 5px 10px;
     cursor: pointer;
+    color: #000000;
 }
 
 .carrito-cantidad input {
     width: 50px;
     text-align: center;
     border: none;
+    color: #000000;
+    padding-left: 15px;
 }
 
 .carrito-precio, .carrito-subtotal {
@@ -84,6 +87,7 @@ img {
     width: 80px;
     text-align: center;
     color: #000000;
+    text-align: left;
 }
 
 #contenedor-pagar {
@@ -92,6 +96,7 @@ img {
     align-items: center;
     gap: 20px;
     justify-content: right;
+    margin-bottom: 100px;
 }
 
 #contenedor-pagar button {
@@ -120,15 +125,15 @@ img {
     margin-bottom: 20px;
 }
 
-.contenedor-footer {
+.contenedor-info-carrito {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: 1rem 8rem;
-    background-color: #21212150;
-    position: absolute;
-    bottom: 0;
+    padding-right: 30px;
+    gap: 20px;
+}
+
+.carrito-eliminar {
+    padding-right: 10px;
 }
 
 @media screen and (max-width: 767px) {
@@ -137,7 +142,7 @@ img {
     }
 
     .contenedor-principal {
-        width: 80%;
+        width: 90%;
     }
 
     .carrito-img img {
@@ -153,19 +158,18 @@ img {
     }
 
     .carrito-cantidad button {
-        padding: 3px 5px;
-    }
-
-    .carrito-cantidad {
-        padding-left: 15px;
+        padding: 0 5px;
     }
 
     .carrito-cantidad input {
         width: 30px;
+        padding-left: 0;
+        font-size: 12px;
     }
 
     .carrito-precio, .carrito-subtotal {
-        font-size: 12px;
+        font-size: 10px;
+        text-align: left;
     }
 
     #contenedor-pagar {
@@ -183,14 +187,27 @@ img {
 
     #mensaje-vacio {
         font-size: 14px;
+        text-align: center;
     }
 
     .eliminar {
-        font-size: 16px;
-        padding-right: 5px;
+        font-size: 14px;
+        padding-left: 10px;
     }
 
     .titulo-txt {
         text-align: center;
+    }
+
+    .carrito-nombre {
+        font-size: 10px;
+    }
+
+    .contenedor-info-carrito {
+        display: flex;
+        align-items: center;
+        padding: 5px 0;
+        width: 170px;
+        gap: 10px;
     }
 }

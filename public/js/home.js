@@ -1,24 +1,18 @@
 let currentIndex = 0;
-
-function showSlide(index) {
-    const slides = document.querySelectorAll('.slide');
-    if (index >= slides.length) {
-        currentIndex = 0;
-    } else if (index < 0) {
-        currentIndex = slides.length - 1;
-    } else {
-        currentIndex = index;
-    }
-
-    slides.forEach(slide => slide.style.display = 'none');
-
-    slides[currentIndex].style.display = 'block';
-}
+const slidesToShow = 3; // Cantidad de camisetas visibles al mismo tiempo
+const slideWidth = 265; // Ancho del slide (ajústalo según el CSS)
+const sliderTrack = document.querySelector('.slider-track');
 
 function moveSlide(step) {
-    showSlide(currentIndex + step);
-}
+    const maxIndex = document.querySelectorAll('.slide').length - slidesToShow;
 
-document.addEventListener('DOMContentLoaded', function() {
-    showSlide(currentIndex);
-});
+    currentIndex += step;
+    if (currentIndex < 0) {
+        currentIndex = maxIndex;
+    } else if (currentIndex > maxIndex) {
+        currentIndex = 0;
+    }
+
+    const moveAmount = -currentIndex * slideWidth;
+    sliderTrack.style.transform = `translateX(${moveAmount}px)`;
+}

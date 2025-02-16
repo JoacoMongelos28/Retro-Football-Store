@@ -8,7 +8,7 @@
     <div class="contenedor-principal">
         <div>
             @if ($filtro ?? false)
-                <h2>Resultados para: <strong>{{ $filtro }}</strong></h2>
+                <h2 class="text-2xl">Resultados para: <strong>{{ $filtro }}</strong></h2>
             @else
                 <h2 class="camisetas-txt text-2xl">Todas las Camisetas</h2>
             @endif
@@ -24,7 +24,7 @@
                 @if (!empty($camisetasFiltradas) && $camisetasFiltradas->isNotEmpty())
                     @foreach ($camisetasFiltradas as $camiseta)
                         <article class="camiseta">
-                            <a href="/home/camiseta/{{ $camiseta->slug }}">
+                            <a href="/home/camiseta/{{ $camiseta->slug }}" class="a-camiseta">
                                 <div class="imagen-hover">
                                     <img class="frontal" src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}">
                                     @if ($camiseta->imagen_trasera)
@@ -32,7 +32,7 @@
                                             alt="{{ $camiseta->nombre }}">
                                     @endif
                                 </div>
-                                <p>{{ $camiseta->nombre }}</p>
+                                <p class="nombre-camiseta">{{ $camiseta->nombre }}</p>
                                 Ver
                             </a>
                             <p id="precio">{{ $camiseta->precio }}</p>
@@ -41,7 +41,7 @@
                 @else
                     @foreach ($camisetas as $camiseta)
                         <article class="camiseta">
-                            <a href="/home/camiseta/{{ $camiseta->slug }}">
+                            <a href="/home/camiseta/{{ $camiseta->slug }}" class="a-camiseta">
                                 <div class="imagen-hover">
                                     <img class="frontal" src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}">
                                     @if ($camiseta->imagen_trasera)
@@ -49,7 +49,7 @@
                                             alt="{{ $camiseta->nombre }}">
                                     @endif
                                 </div>
-                                <p>{{ $camiseta->nombre }}</p>
+                                <p class="nombre-camiseta">{{ $camiseta->nombre }}</p>
                                 Ver
                             </a>
                             <p id="precio">{{ $camiseta->precio }}</p>
