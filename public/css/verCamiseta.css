@@ -3,7 +3,6 @@
 }
 
 img {
-    width: 450px;
     height: 450px !important;
 }
 
@@ -19,22 +18,17 @@ img {
     margin-bottom: 50px;
 }
 
-.slider-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 100px;
+.swiper-pagination span {
+    background-color: white;
+    font-size: 16px;
 }
 
-.slider-prev,
-.slider-next {
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 10px;
-    transform: translateY(-50%);
+.camiseta-li {
+    user-select: none;
+}
+
+.aside {
+    margin-bottom: 150px;
 }
 
 .camisetas-oferta {
@@ -61,7 +55,6 @@ img {
 }
 
 .miniatura {
-    width: 120px; 
     height: 120px !important;
     cursor: pointer;
     transition: border 0.2s ease-in-out;
@@ -73,23 +66,31 @@ img {
 
 .imagen-hover {
     position: relative;
-    display: inline-block;
-    width: 100%;
-    height: auto !important;
+    display: flex;
+    justify-content: center;
 }
 
 .imagen-hover img {
     display: block;
     transition: opacity 0.3s ease-in-out;
     height: 200px !important;
-    width: 200px;
 }
 
 .imagen-hover .trasera {
     position: absolute;
-    top: 0;
-    left: 0;
     opacity: 0;
+}
+
+#precio {
+    margin-top: 5px;
+    font-weight: bold;
+    color: #00060c;
+}
+
+.nombre-camiseta {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #00060c;
 }
 
 .contenedor-imagen {
@@ -196,18 +197,6 @@ img {
     margin: 10px 0;
 }
 
-#precio {
-    font-weight: bold;
-    margin: 10px 0;
-    color: #ffffff;
-}
-
-.nombre-camiseta {
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #ffffff;
-}
-
 .contenedor-info {
     width: 35%;
 }
@@ -254,6 +243,39 @@ img {
     margin: 5px 0;
 }
 
+.card-wrapper {
+    margin: 0 60px 35px;
+    padding: 20px 0;
+    overflow: hidden;
+}
+
+.card-wrapper .swiper-pagination-bullet {
+    background-color: rgba(80, 90, 223, 0.50);
+    height: 14px;
+    width: 14px;
+}
+
+.card-wrapper .swiper-pagination-bullet-active {
+    opacity: 1;
+}
+
+.card-wrapper .swiper-slide-button {
+    color: rgb(232 41 91);
+    margin-top: -35px;
+}
+
+.card-wrapper .swiper-slide-button:hover {
+    color: rgb(80, 90, 223);
+}
+
+.camiseta-li {
+    user-select: none;
+}
+
+.a-camiseta:active {
+    cursor: grabbing;
+}
+
 @media screen and (max-width: 1024px) {
     .contenedor-camiseta {
         display: block;
@@ -283,12 +305,10 @@ img {
 
 @media screen and (max-width: 768px) {
     img {
-        width: 300px;
         height: 300px !important;
     }
 
     .miniatura {
-        width: 80px;
         height: 80px !important;
     }
 
@@ -304,16 +324,52 @@ img {
         padding: 5px;
         font-size: 10px;
     }
+
+    .slide {
+        min-width: 130px;
+    }
+
+    .frontal, .trasera {
+        width: 100px;
+        height: 100px !important;
+    }
+
+    .slider-prev, .slider-next {
+        display: none;
+    }
+
+    .nombre-camiseta-slider {
+        color: #000000;
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    #precio-slider {
+        color: #000000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+
+    .input-cantidad {
+        padding-left: 0;
+    }
+
+    .card-wrapper {
+        margin: 0 10px 25px;
+    }
+
+    .card-wrapper .swiper-slide-button {
+        display: none;
+    }
 }
 
 @media screen and (max-width: 560px) {
     img {
-        width: 250px;
         height: 250px !important;
     }
 
     .miniatura {
-        width: 80px;
         height: 80px !important;
     }
 
@@ -338,6 +394,32 @@ img {
         padding: 10px 20px;
         font-size: 14px;
     }
+
+    .slide {
+        min-width: 130px;
+    }
+
+    .frontal, .trasera {
+        width: 100px;
+        height: 100px !important;
+    }
+
+    .slider-prev, .slider-next {
+        display: none;
+    }
+
+    .nombre-camiseta-slider {
+        color: #000000;
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    #precio-slider {
+        color: #000000;
+        font-weight: bold;
+        font-size: 12px;
+    }
 }
 
 @media screen and (max-width: 500px) {
@@ -355,7 +437,6 @@ img {
     }    
 
     img {
-        width: 230px;
         height: 230px !important;
     }
 
@@ -364,7 +445,6 @@ img {
     }
 
     .miniatura {
-        width: 70px;
         height: 70px !important;
     }
 
@@ -394,5 +474,31 @@ img {
     .contenedor-btn-ver {
         padding: 5px;
         font-size: 10px;
+    }
+
+    .slide {
+        min-width: 130px;
+    }
+
+    .frontal, .trasera {
+        width: 100px;
+        height: 100px !important;
+    }
+
+    .slider-prev, .slider-next {
+        display: none;
+    }
+
+    .nombre-camiseta-slider {
+        color: #000000;
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    #precio-slider {
+        color: #000000;
+        font-weight: bold;
+        font-size: 12px;
     }
 }

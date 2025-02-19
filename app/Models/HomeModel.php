@@ -18,7 +18,9 @@ class HomeModel extends Model
         $camisetasDestacadas = $camisetasDestacadas->take(12);
 
         return $camisetasDestacadas->map(function ($camiseta) {
-            $camiseta->imagen = $this->convertirImagenABase64($camiseta->imagen);
+            if ($camiseta->imagen) {
+                $camiseta->imagen = $this->convertirImagenABase64($camiseta->imagen);
+            }
 
             if ($camiseta->imagen_trasera) {
                 $camiseta->imagen_trasera = $this->convertirImagenABase64($camiseta->imagen_trasera);
@@ -33,7 +35,9 @@ class HomeModel extends Model
         $camiseta = $this->find($id);
 
         if ($camiseta) {
-            $camiseta->imagen = $this->convertirImagenABase64($camiseta->imagen);
+            if ($camiseta->imagen) {
+                $camiseta->imagen = $this->convertirImagenABase64($camiseta->imagen);
+            }
 
             if ($camiseta->imagen_trasera) {
                 $camiseta->imagen_trasera = $this->convertirImagenABase64($camiseta->imagen_trasera);
@@ -62,7 +66,9 @@ class HomeModel extends Model
         $camisetas = $this->paginate(12);
 
         $camisetas->getCollection()->transform(function ($camiseta) {
-            $camiseta->imagen = $this->convertirImagenABase64($camiseta->imagen);
+            if ($camiseta->imagen) {
+                $camiseta->imagen = $this->convertirImagenABase64($camiseta->imagen);
+            }
 
             if ($camiseta->imagen_trasera) {
                 $camiseta->imagen_trasera = $this->convertirImagenABase64($camiseta->imagen_trasera);
@@ -80,12 +86,14 @@ class HomeModel extends Model
             ->inRandomOrder()
             ->get()
             ->map(function ($camiseta) {
-                $camiseta->imagen = $this->convertirImagenABase64($camiseta->imagen);
+                if ($camiseta->imagen) {
+                    $camiseta->imagen = $this->convertirImagenABase64($camiseta->imagen);
+                }
 
                 if ($camiseta->imagen_trasera) {
                     $camiseta->imagen_trasera = $this->convertirImagenABase64($camiseta->imagen_trasera);
                 }
-    
+
                 return $camiseta;
             });
     }
@@ -132,24 +140,40 @@ class HomeModel extends Model
             }
         }
 
-        Mail::to($email)->send(new CompraMail($productos));
+        $productosArray = $productos->toArray();
+        Mail::to($email)->send(new CompraMail($productosArray));
     }
 
     public function obtenerCamisetasPorFiltro($filtro)
     {
-        $camisetas = $this->where('nombre', 'like', '%' . $filtro . '%')->paginate(12);
+        $query = HomeModel::query();
 
-        $camisetas->getCollection()->transform(function ($camiseta) {
-            $camiseta->imagen = $this->convertirImagenABase64($camiseta->imagen);
+        $filtrosValidos = [
+            'todos' => fn($query) => $query,
+            'precio-menor-mayor' => fn($query) => $query->orderBy('precio', 'asc'),
+            'precio-mayor-menor' => fn($query) => $query->orderBy('precio', 'desc'),
+            'destacados' => fn($query) => $query->where('estado', 1),
+            'ofertas' => fn($query) => $query->where('estado', 2),
+        ];
 
-            if ($camiseta->imagen_trasera) {
-                $camiseta->imagen_trasera = $this->convertirImagenABase64($camiseta->imagen_trasera);
-            }
+        $camisetas = $filtrosValidos[$filtro] ?? fn($query) => $query->where('nombre', 'like', "%$filtro%");
 
-            return $camiseta;
-        });
+        $camisetas = $camisetas($query)->paginate(12);
+
+        $camisetas->getCollection()->transform(fn($camiseta) => $this->procesarImagenes($camiseta));
 
         return $camisetas;
+    }
+
+    private function procesarImagenes($camiseta)
+    {
+        if ($camiseta->imagen) {
+            $camiseta->imagen = $this->convertirImagenABase64($camiseta->imagen);
+        }
+        if ($camiseta->imagen_trasera) {
+            $camiseta->imagen_trasera = $this->convertirImagenABase64($camiseta->imagen_trasera);
+        }
+        return $camiseta;
     }
 
     private function convertirImagenABase64($imagen)

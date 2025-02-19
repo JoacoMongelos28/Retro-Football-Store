@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Retro Football Store</title>
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
 
 <body>
@@ -17,7 +18,7 @@
 
             <div>
                 @if (session('exitoso'))
-                    <p>
+                    <p class="exitoso">
                         {{ session('exitoso') }}
                     </p>
                 @endif
@@ -47,27 +48,21 @@
                 </div>
                 <div>
                     @if (session('error'))
-                        <p>
+                        <p class="text-danger">
                             {{ session('error') }}
                         </p>
                     @endif
                 </div>
-                <div>
+                <div class="contenedor-opciones">
                     <a href="/registro">Registrarse</a>
-                </div>
-                <div>
                     <a href="#">Olvidé mi contraseña</a>
                 </div>
             </form>
         </div>
     </main>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('js/login.js') }}"></script>
+    
 </body>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const redirectUrl = localStorage.getItem("url_previa") || "/home";
-        document.getElementById("redirect").value = redirectUrl;
-    });
-</script>
 
 </html>

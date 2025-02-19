@@ -35,6 +35,19 @@ class CarritoProductoModel extends Model
         return $carrito;
     }
 
+    public function agregarCamisetasExisatenteAlCarrito($idCamiseta, $idCarrito, $nuevaCantidad) {
+        $carrito = CarritoProductoModel::where('carrito_id', $idCarrito)
+            ->where('camiseta_id', $idCamiseta)
+            ->first();
+
+        if ($carrito) {
+            $carrito->cantidad = $nuevaCantidad;
+            $carrito->save();
+        }
+
+        return $carrito;
+    }
+
     public function obtenerCamisetasDelCarrito($idCarrito)
     {
         $camisetas = CarritoProductoModel::join('camiseta', 'carrito_camiseta.camiseta_id', '=', 'camiseta.id')
@@ -70,8 +83,7 @@ class CarritoProductoModel extends Model
         return $camisetas;
     }
 
-
-    public function joinearCarrito($carritoObtenido)
+    public function obtenerPrecioTotalDeLosProductosEnElCarrito($carritoObtenido)
     {
         if (!$carritoObtenido) return collect();
 
@@ -87,6 +99,7 @@ class CarritoProductoModel extends Model
     public function obtenerCamisetasAEliminar($carritoObtenido)
     {
         if (!$carritoObtenido) return collect();
+        
         return CarritoProductoModel::join('camiseta', 'carrito_camiseta.camiseta_id', '=', 'camiseta.id')
             ->select(
                 'camiseta.id',
@@ -135,5 +148,11 @@ class CarritoProductoModel extends Model
     public function obtenerProductosDelCarrito($idCarrito)
     {
         return CarritoProductoModel::where('carrito_id', $idCarrito)->get();
+    }
+
+    public function obtenerProductoEnCarrito($idCarrito, $idCamiseta) {
+        return CarritoProductoModel::where('carrito_id', $idCarrito)
+            ->where('camiseta_id', $idCamiseta)
+            ->first();
     }
 }

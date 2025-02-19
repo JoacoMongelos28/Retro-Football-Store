@@ -1,0 +1,339 @@
+.contenedor-principal {
+    width: 80%;
+}
+
+img {
+    background-color: #ffffff;
+    height: 450px !important;
+}
+
+.contenedor-camiseta {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.lupa {
+    position: absolute;
+    width: 120px;
+    height: 120px !important;
+    border: 2px solid #000;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    display: none;
+}
+
+.miniaturas {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
+    gap: 20px;
+}
+
+.miniatura {
+    height: 120px !important;
+    cursor: pointer;
+    transition: border 0.2s ease-in-out;
+}
+
+.miniatura:hover {
+    border: 2px solid #000;
+}
+
+.imagen-hover {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: auto !important;
+}
+
+.imagen-hover img {
+    display: block;
+    transition: opacity 0.3s ease-in-out;
+    height: 200px !important;
+}
+
+.imagen-hover .trasera {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+.contenedor-imagen {
+    display: flex;
+}
+
+.mensaje-sin-stock {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+#precio {
+    font-weight: bold;
+    margin: 10px 0;
+    color: #ffffff;
+}
+
+.nombre-camiseta {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.contenedor-info {
+    width: 35%;
+}
+
+.descripcion-txt {
+    width: 85%;
+    margin-top: 20px;
+}
+
+.contenedor-info {
+    margin-bottom: 200px;
+}
+
+.talles-txt {
+    padding-bottom: 20px;
+}
+
+.contenedor-info-stock {
+    margin-bottom: 20px;
+}
+
+.contenedor-botones-opciones {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.contenedor-btn-editar {
+    text-align: center;
+    margin-top: 10px;
+    background-color: rgb(80 89 223);
+    border-radius: 5px;
+    padding: 8px;
+    color: #ffffff;
+    cursor: pointer;
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.contenedor-btn-eliminar {
+    text-align: center;
+    margin-top: 10px;
+    background-color: rgb(232 41 91);
+    border-radius: 5px;
+    padding: 8px;
+    color: #ffffff;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.contenedor-btn-editar:hover {
+    background-color: rgb(232 41 91);
+}
+
+.contenedor-btn-eliminar:hover {
+    background-color: rgb(80 89 223);
+}
+
+.contenedor-btn-volver {
+    text-align: center;
+    margin-top: 10px;
+    background-color: rgb(80 89 223);
+    border-radius: 5px;
+    padding: 8px;
+    color: #ffffff;
+    cursor: pointer;
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.contenedor-btn-volver:hover {
+    background-color: rgb(232 41 91);
+}
+
+.contenedor-buscador-mobile, .group {
+    display: none;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    padding: 20px;
+}
+
+.popup-contenido {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    background: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.popup-contenido button {
+    margin: 10px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #ffffff;
+    background-color:rgb(232 41 91);
+    border-radius: 5px;
+}
+
+#confirmar-eliminar {
+    color: #ffffff;
+    border-radius: 5px;
+}
+
+#cancelar-eliminar {
+    background-color: rgb(80 89 223);
+    color: white;
+    border-radius: 5px;
+}
+
+.eliminar-txt {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #00060c;
+    font-weight: bold;
+}
+
+.boton-eliminar {
+    background-color: inherit;
+    border: none;
+    font-size: 16px;
+    color: #ffffff;
+}
+
+.contenedor-botones-popup {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+}
+
+#confirmar-eliminar a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+@media screen and (max-width: 1024px) {
+    .contenedor-camiseta {
+        display: block;
+        margin: 0;
+    }
+
+    .contenedor-imagen {
+        justify-content: center;
+    }
+
+    .contenedor-info {
+        width: 100%;
+    }
+
+    .nombre-camiseta {
+        margin-top: 30px;
+    }
+
+    .contenedor-talles {
+        gap: 20px;
+    }
+
+    .talle-btn {
+        padding: 10px 20px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    img {
+        height: 300px !important;
+    }
+
+    .miniatura {
+        height: 80px !important;
+    }
+
+    .nombre-camiseta, #precio {
+        font-size: 12px;
+    }
+
+    .contenedor-botones-opciones {
+        justify-content: center;
+    }
+}
+
+@media screen and (max-width: 560px) {
+    img {
+        height: 250px !important;
+    }
+
+    .miniatura {
+        height: 80px !important;
+    }
+
+    .contenedor-info {
+        width: 100%;
+    }
+
+    .nombre-camiseta {
+        margin-top: 20px;
+    }
+
+    .contenedor-botones-opciones {
+        justify-content: center;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .contenedor-camiseta {
+        display: block;
+        margin: 0;
+    }
+
+    .contenedor-info {
+        width: 100%;
+    }
+
+    .contenedor-imagen {
+        flex-direction: row-reverse;
+    } 
+
+    img {
+        height: 230px !important;
+    }
+
+    .miniaturas {
+        padding: 0  0 0 20px;
+    }
+
+    .miniatura {
+        height: 70px !important;
+    }
+
+    .nombre-camiseta {
+        margin-top: 20px;
+    }
+
+    .contenedor-botones-opciones {
+        justify-content: center;
+    }
+}

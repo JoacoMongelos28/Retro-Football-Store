@@ -28,7 +28,6 @@ class MercadoPagoModel extends Model
         $jsonBody = [
             'items' => [$item],
             'back_urls' => $backUrls,
-            'auto_return' => 'approved',
         ];
 
         $response = Http::withHeaders([

@@ -207,7 +207,6 @@ img {
         display: flex;
         align-items: center;
         padding: 5px 0;
-        width: 170px;
-        gap: 10px;
+        width: 140px;
     }
 }

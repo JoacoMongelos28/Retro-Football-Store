@@ -1,5 +1,5 @@
 .contenedor-principal {
-    width: 80%;
+    width: 65%;
     margin: auto;
     padding-top: 120px;
 }
@@ -7,13 +7,12 @@
 .contenedor-camisetas {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 40px;
     padding: 20px 0;
-    margin-bottom: 100px;
+    margin-bottom: 50px;
 }
 
 img {
-    width: 200px;
     height: 200px !important;
 }
 
@@ -36,6 +35,11 @@ img {
 .camisetas-txt {
     text-align: center;
     padding: 20px 0;
+}
+
+.resultado {
+    margin-bottom: 30px;
+    text-align: center;
 }
 
 .camiseta {
@@ -84,7 +88,26 @@ img {
 .paginacion {
     display: flex;
     justify-content: center;
-    margin-top: 40px;
+    margin-bottom: 100px;
+}
+
+.contenedor-filtro {
+    display: flex;
+    justify-content: right;
+}
+
+.filtro-select {
+    padding: 10px;
+    background-color: rgb(80 89 223);
+    color: #ffffff;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+}
+
+.filtro-select option {
+    background-color: #ffffff;
+    color: #00060c;
 }
 
 @media screen and (max-width: 1365px) {
@@ -96,6 +119,11 @@ img {
 @media screen and (max-width: 767px) {
     .contenedor-principal {
         padding-top: 80px;
+        width: 80%;
+    }
+
+    .contenedor-camisetas {
+        gap: 30px 20px;
     }
 
     .contenedor-camisetas-destacadas {
@@ -121,6 +149,11 @@ img {
     }
 
     .a-camiseta {
+        font-size: 12px;
+    }
+
+    .filtro-select {
+        padding: 5px;
         font-size: 12px;
     }
 }

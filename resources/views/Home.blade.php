@@ -1,6 +1,7 @@
 <x-header>
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     @endpush
 </x-header>
 
@@ -36,73 +37,56 @@
                             </div>
                             <p class="nombre-camiseta">{{ $camiseta->nombre }}</p>
                             <p id="precio">${{ $camiseta->precio }}</p>
-                        <div class="contenedor-btn-ver">VER</div></a>
-                    </article>
-                @endforeach
-            @endif
-    </section>
-
-    <div class="contenedor-ver-todas">
-        <a href="/camisetas" class="ver-todas-camisetas">Ver todas las camisetas</a>
-    </div>
-
-    <div>
-        <h2 class="titulo-productos-txt text-2xl">Productos en oferta</h2>
-    </div>
-
-    <aside class="slider-container">
-        <button class="slider-prev" onclick="moveSlide(-1)">&#10094;</button>
-    
-        <div class="slider-wrapper">
-            <div class="slider-track">
-                @foreach ($camisetasEnOferta as $camiseta)
-                    <article class="slide camiseta">
-                        <a href="/home/camiseta/{{ $camiseta->slug }}" class="a-camiseta">
-                            <div class="imagen-hover">
-                                <img class="frontal" src="{{ $camiseta->imagen }}" alt="{{ $camiseta->nombre }}">
-                                @if ($camiseta->imagen_trasera)
-                                    <img class="trasera" src="{{ $camiseta->imagen_trasera }}" alt="{{ $camiseta->nombre }}">
-                                @endif
-                            </div>
-                            <p class="nombre-camiseta">{{ $camiseta->nombre }}</p>
-                            <p id="precio">${{ $camiseta->precio }}</p>
                             <div class="contenedor-btn-ver">VER</div>
                         </a>
                     </article>
                 @endforeach
-            </div>
+            @endif
+        </section>
+
+        <div class="contenedor-ver-todas">
+            <a href="/camisetas" class="ver-todas-camisetas">Ver todas las camisetas</a>
         </div>
-    
-        <button class="slider-next" onclick="moveSlide(1)">&#10095;</button>
-    </aside>    
+
+        <div>
+            <h2 class="titulo-productos-txt text-2xl">Productos en oferta</h2>
+        </div>
+
+        <aside class="aside">
+            <div class="contenedor-slider-principal swiper">
+                <div class="contenedor-slider card-wrapper">
+                    <ul class="contenedor-camisetas swiper-wrapper">
+                        @foreach ($camisetasEnOferta as $camiseta)
+                            <li class="camiseta camiseta-li swiper-slide">
+                                <a href="/home/camiseta/{{ $camiseta->slug }}" class="a-camiseta">
+                                    <div class="imagen-hover">
+                                        <img class="frontal" src="{{ $camiseta->imagen }}"
+                                            alt="{{ $camiseta->nombre }}">
+                                        @if ($camiseta->imagen_trasera)
+                                            <img class="trasera" src="{{ $camiseta->imagen_trasera }}"
+                                                alt="{{ $camiseta->nombre }}">
+                                        @endif
+                                    </div>
+                                    <p class="nombre-camiseta">{{ $camiseta->nombre }}</p>
+                                    <p id="precio">${{ $camiseta->precio }}</p>
+                                    <div class="contenedor-btn-ver">VER</div>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-slide-button swiper-button-prev"></div>
+                    <div class="swiper-slide-button swiper-button-next"></div>
+                </div>
+            </div>
+        </aside>
     </div>
 </main>
 
-<script src="{{ asset('js/home.js') }}"></script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    $(document).ready(function() {
-        $('.camiseta').each(function() {
-            const trasera = $(this).find('.trasera');
-
-            if (trasera.length > 0) {
-                $(this).find('.imagen-hover').hover(
-                    function() {
-                        $(this).find('.frontal').css('opacity', '0');
-                        $(this).find('.trasera').css('opacity', '1');
-                    },
-                    function() {
-                        $(this).find('.frontal').css('opacity', '1');
-                        $(this).find('.trasera').css('opacity', '0');
-                    }
-                );
-            } else {
-                $(this).find('.imagen-hover').off('mouseenter mouseleave');
-            }
-        });
-    });    
-</script>
-
-<x-footer></x-footer>
+<x-footer>
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+        <script src="{{ asset('js/home.js') }}"></script>
+    @endpush
+</x-footer>

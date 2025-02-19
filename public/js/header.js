@@ -1,22 +1,48 @@
-const menuToggle = document.querySelector('.menu-toggle');
-const menuNav = document.querySelector('.contenedor-menu-nav');
-const menuLinks = document.querySelectorAll('.menu-a');
+const $menuToggle = $('.menu-toggle');
+const $menuNav = $('.contenedor-menu-nav');
+const $menuLinks = $('.menu-a');
 
-menuToggle.addEventListener('click', () => {
-    menuNav.classList.toggle('active');
-});
-
-menuLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        menuNav.classList.remove('active');
+if ($menuToggle.length) {
+    $menuToggle.on('click', function () {
+        $menuNav.toggleClass('active');
     });
-});
 
-document.addEventListener('click', (event) => {
-    const isClickInsideMenu = menuNav.contains(event.target);
-    const isClickOnToggle = menuToggle.contains(event.target);
+    $menuLinks.on('click', function () {
+        $menuNav.removeClass('active');
+    });
 
-    if (!isClickInsideMenu && !isClickOnToggle) {
-        menuNav.classList.remove('active');
+    $(document).on('click', function (event) {
+        const isClickInsideMenu = $menuNav.has(event.target).length > 0;
+        const isClickOnToggle = $menuToggle.has(event.target).length > 0;
+
+        if (!isClickInsideMenu && !isClickOnToggle) {
+            $menuNav.removeClass('active');
+        }
+    });
+}
+
+$(".group").click(function(event) {
+    event.stopPropagation();
+
+    if (!$(this).hasClass("expandido")) {
+        $(this).addClass("expandido");
+        $(this).find(".input").focus();
     }
 });
+
+$(document).click(function(event) {
+    if (!$(event.target).closest(".group").length) {
+        $(".group").removeClass("expandido");
+    }
+});
+
+function guardarUrl() {
+    localStorage.setItem("url_previa", window.location.href);
+}
+
+function redirectToUrl(form) {
+    const filtro = $(form).find('input[name="filtro"]').val();
+    const url = filtro ? `/camisetas/${encodeURIComponent(filtro.replace(/\s+/g, '-'))}` : '/camisetas';
+    window.location.href = url;
+    return false;
+}
