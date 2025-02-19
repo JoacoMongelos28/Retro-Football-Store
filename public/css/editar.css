@@ -1,5 +1,161 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #121212;
+    color: #E0E0E0;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 150px 0;
+}
+
 .contenedor-principal {
-    width: 80%;
-    margin: auto;
-    padding-top: 120px;
+    background-color: #1E1E1E;
+    padding: 30px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.titulo-nueva-camiseta {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #F1F1F1;
+    text-align: center;
+}
+
+.error-message {
+    color: #FF4D4D;
+    background-color: #2E2E2E;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-field {
+    margin-bottom: 20px;
+}
+
+.talles-container input[type="number"] {
+    display: none;
+}
+
+label {
+    font-size: 16px;
+    color: #B0B0B0;
+}
+
+input[type="text"],
+input[type="file"],
+input[type="number"],
+select {
+    background-color: #333;
+    color: #E0E0E0;
+    border: 1px solid #444;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+}
+
+input[type="text"]:focus,
+input[type="file"]:focus,
+input[type="number"]:focus,
+select:focus {
+    border-color: #6200EE;
+    outline: none;
+}
+
+.text-danger {
+    font-size: 14px;
+    color: #FF4D4D;
+    margin-top: 5px;
+}
+
+.talles-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.contenedor-buscador-mobile, .group {
+    display: none;
+}
+
+.input-cantidad {
+    width: 60px;
+    background-color: #222;
+    border: 1px solid #444;
+    color: #E0E0E0;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.contenedor-boton-agregar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.contenedor-boton-agregar button {
+    background-color: rgb(80 89 223);
+    color: #E0E0E0;
+    border: none;
+    padding: 8px;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.contenedor-boton-agregar button:hover {
+    background-color: rgb(232 41 91);
+}
+
+.contenedor-btn-volver {
+    text-align: center;
+    margin-top: 10px;
+    background-color: rgb(232 41 91);
+    border-radius: 5px;
+    padding: 8px;
+    color: #ffffff;
+    cursor: pointer;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 18px;
+}
+
+.contenedor-btn-volver:hover {
+    background-color: rgb(80 89 223);
+}
+
+.editar-txt {
+    text-align: center;
+    margin: 5px 0 20px;
+}
+
+@media screen and (max-width: 768px) {
+    .contenedor-principal {
+        width: 90%;
+    }
+
+    main {
+        margin-top: 100px;
+    }
 }

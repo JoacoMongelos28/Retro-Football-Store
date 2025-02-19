@@ -1,3 +1,7 @@
+.contenedor-principal {
+    width: 65%;
+}
+
 .titulo-principal {
     text-align: center;
 }
@@ -7,75 +11,52 @@
     margin-top: 10px;
 }
 
-img {
-    width: 200px;
-    height: 200px !important;
-}
-
 .contenedor-camisetas-destacadas {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 40px 20px;
+    gap: 40px;
     padding: 20px;
 }
 
-.slider-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    margin-bottom: 100px;
-    margin-top: 20px;
-}
-
-.slider-wrapper {
-    width: 80%;
+.card-wrapper {
+    margin: 0 60px 35px;
+    padding: 20px 0;
     overflow: hidden;
 }
 
-.slider-track {
-    display: flex;
-    gap: 15px;
-    transition: transform 0.3s ease-in-out;
+.card-wrapper .swiper-pagination-bullet {
+    background-color: rgba(80, 90, 223, 0.50);
+    height: 14px;
+    width: 14px;
 }
 
-.slide {
-    min-width: 250px;
-    max-width: 250px;
+.card-wrapper .swiper-pagination-bullet-active {
+    opacity: 1;
 }
 
-.slider-prev,
-.slider-next {
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 10px;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
+.card-wrapper .swiper-slide-button {
+    color: rgb(232 41 91);
+    margin-top: -35px;
 }
 
-.slider-prev {
-    left: 10px;
+.card-wrapper .swiper-slide-button:hover {
+    color: rgb(80, 90, 223);
 }
 
-.slider-next {
-    right: 10px;
+.camiseta-li {
+    user-select: none;
+}
+
+.aside {
+    margin-bottom: 150px;
 }
 
 .frontal {
-    width: 150px;
-    height: 150px !important;
+    height: 200px !important;
 }
 
 .trasera {
-    width: 150px;
-    height: 150px !important;
+    height: 200px !important;
 }
 
 .imagen-hover {
@@ -150,6 +131,10 @@ img {
     color: #00060c;
 }
 
+.a-camiseta:active {
+    cursor: grabbing;
+}
+
 @media screen and (max-width: 1365px) {
     .contenedor-camisetas-destacadas {
         grid-template-columns: repeat(2, 1fr);
@@ -159,6 +144,7 @@ img {
 @media screen and (max-width: 767px) {
     .contenedor-principal {
         padding-top: 80px;
+        width: 80%;
     }
 
     .contenedor-camisetas-destacadas {
@@ -170,7 +156,6 @@ img {
     }
 
     img {
-        width: 100px;
         height: 100px !important;
     }
 
@@ -195,5 +180,25 @@ img {
 
     .ver-todas-camisetas {
         padding: .5rem 1rem !important;
+    }
+
+    .slide {
+        min-width: 130px;
+    }
+
+    .frontal, .trasera {
+        height: 100px !important;
+    }
+
+    .slider-prev, .slider-next {
+        display: none;
+    }
+
+    .card-wrapper {
+        margin: 0 10px 25px;
+    }
+
+    .card-wrapper .swiper-slide-button {
+        display: none;
     }
 }

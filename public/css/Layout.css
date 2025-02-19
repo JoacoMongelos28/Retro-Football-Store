@@ -97,6 +97,7 @@ input:hover {
     position: fixed;
     width: 100vw;
     z-index: 1000;
+    gap: 15px;
 }
 
 .logo-txt {
@@ -299,5 +300,9 @@ input:hover {
 
     .group.expandido {
         width: 180px;
+    }
+
+    .menu-a {
+        font-size: 12px;
     }
 }

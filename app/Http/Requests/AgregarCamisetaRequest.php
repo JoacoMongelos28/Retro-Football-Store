@@ -27,6 +27,7 @@ class AgregarCamisetaRequest extends FormRequest
             'precio' => 'required|numeric',
             'estado' => 'required|integer',
             'imagen' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'imagen_trasera' => '|image|mimes:jpeg,png,jpg|max:2048',
             'cantidadXS' => 'nullable|integer|min:0',
             'cantidadS' => 'nullable|integer|min:0',
             'cantidadM' => 'nullable|integer|min:0',
@@ -41,7 +42,10 @@ class AgregarCamisetaRequest extends FormRequest
         return [
             'imagen.image' => 'El archivo que subiste no es una imagen. Por favor, selecciona una imagen válida (JPEG, PNG o JPG).',
             'imagen.mimes' => 'La imagen debe ser de tipo JPEG, PNG o JPG.',
-            'imagen.max' => 'La imagen no puede ser mayor a 2MB. Por favor, sube una imagen más pequeña.'
+            'imagen.max' => 'La imagen no puede ser mayor a 2MB. Por favor, sube una imagen más pequeña.',
+            'imagen_trasera.image' => 'El archivo que subiste no es una imagen. Por favor, selecciona una imagen válida (JPEG, PNG o JPG).',
+            'imagen_trasera.mimes' => 'La imagen debe ser de tipo JPEG, PNG o JPG.',
+            'imagen_trasera.max' => 'La imagen no puede ser mayor a 2MB. Por favor, sube una imagen más pequeña.'
         ];
     }
 }

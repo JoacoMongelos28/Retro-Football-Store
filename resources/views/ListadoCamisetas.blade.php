@@ -7,17 +7,28 @@
 <main>
     <div class="contenedor-principal">
         <div>
-            @if ($filtro ?? false)
-                <h2 class="text-2xl">Resultados para: <strong>{{ $filtro }}</strong></h2>
+            @if ($filtro && !in_array($filtro, ['destacados', 'ofertas', 'precio-menor-mayor', 'precio-mayor-menor', 'todos']))
+                <h2 class="text-3xl resultado">Resultados para: <strong>{{ $filtro }}</strong></h2>
             @else
-                <h2 class="camisetas-txt text-2xl">Todas las Camisetas</h2>
+                <h2 class="camisetas-txt text-3xl">Todas las Camisetas</h2>
             @endif
-        </div>
+        </div>        
 
         @if (!empty($camisetasFiltradas) && $filtro && $camisetasFiltradas->isEmpty())
             <p class="error">No se encontraron camisetas</p>
-            <h4>Otras camisetas que podrian gustarte!</h4>
         @endif
+
+        <div class="contenedor-filtro">
+            <form method="get" action="" class="form-filtro" id="formFiltro">
+                <select id="filtro" class="filtro-select" name="filtro" onchange="filtrarCamisetas()">
+                    <option value="todos" {{ $filtro == 'todos' ? 'selected' : '' }}>Todos</option>
+                    <option value="destacados" {{ $filtro == 'destacados' ? 'selected' : '' }}>Destacados</option>
+                    <option value="ofertas" {{ $filtro == 'ofertas' ? 'selected' : '' }}>Ofertas</option>
+                    <option value="precio-menor-mayor" {{ $filtro == 'precio-menor-mayor' ? 'selected' : '' }}>Precio Menor a Mayor</option>
+                    <option value="precio-mayor-menor" {{ $filtro == 'precio-mayor-menor' ? 'selected' : '' }}>Precio Mayor a Menor</option>
+                </select>
+            </form>
+        </div>
 
         <section class="contenedor-camisetas">
             @if ($filtro)
@@ -33,9 +44,9 @@
                                     @endif
                                 </div>
                                 <p class="nombre-camiseta">{{ $camiseta->nombre }}</p>
-                                Ver
+                                <p id="precio">{{ $camiseta->precio }}</p>
+                                <div class="contenedor-btn-ver">VER</div>
                             </a>
-                            <p id="precio">{{ $camiseta->precio }}</p>
                         </article>
                     @endforeach
                 @else
@@ -50,9 +61,9 @@
                                     @endif
                                 </div>
                                 <p class="nombre-camiseta">{{ $camiseta->nombre }}</p>
-                                Ver
+                                <p id="precio">{{ $camiseta->precio }}</p>
+                                <div class="contenedor-btn-ver">VER</div>
                             </a>
-                            <p id="precio">{{ $camiseta->precio }}</p>
                         </article>
                     @endforeach
                 @endif
@@ -82,29 +93,8 @@
     </div>
 </main>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    $(document).ready(function() {
-        $('.camiseta').each(function() {
-            const trasera = $(this).find('.trasera');
-
-            if (trasera.length > 0) {
-                $(this).find('.imagen-hover').hover(
-                    function() {
-                        $(this).find('.frontal').css('opacity', '0');
-                        $(this).find('.trasera').css('opacity', '1');
-                    },
-                    function() {
-                        $(this).find('.frontal').css('opacity', '1');
-                        $(this).find('.trasera').css('opacity', '0');
-                    }
-                );
-            } else {
-                $(this).find('.imagen-hover').off('mouseenter mouseleave');
-            }
-        });
-    });
-</script>
-
-<x-footer></x-footer>
+<x-footer>
+    @push('scripts')
+        <script src="{{ asset('js/listadoCamisetas.js') }}"></script>
+    @endpush
+</x-footer>

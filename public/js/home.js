@@ -1,18 +1,46 @@
-let currentIndex = 0;
-const slidesToShow = 3; // Cantidad de camisetas visibles al mismo tiempo
-const slideWidth = 265; // Ancho del slide (ajústalo según el CSS)
-const sliderTrack = document.querySelector('.slider-track');
+new Swiper('.card-wrapper', {
+    loop: true,
+    spaceBetween: 30,
 
-function moveSlide(step) {
-    const maxIndex = document.querySelectorAll('.slide').length - slidesToShow;
+    pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+        dynamicBullets: true,
+    },
 
-    currentIndex += step;
-    if (currentIndex < 0) {
-        currentIndex = maxIndex;
-    } else if (currentIndex > maxIndex) {
-        currentIndex = 0;
+    navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+    },
+
+    breakpoints: {
+        0: {
+            slidesPerView: 2,
+        },
+        768: {
+            slidesPerView: 2,
+        },
+        1024: {
+            slidesPerView: 4,
+        },
     }
+});
 
-    const moveAmount = -currentIndex * slideWidth;
-    sliderTrack.style.transform = `translateX(${moveAmount}px)`;
-}
+$('.camiseta').each(function () {
+    const trasera = $(this).find('.trasera');
+
+    if (trasera.length > 0) {
+        $(this).find('.imagen-hover').hover(
+            function () {
+                $(this).find('.frontal').css('opacity', '0');
+                $(this).find('.trasera').css('opacity', '1');
+            },
+            function () {
+                $(this).find('.frontal').css('opacity', '1');
+                $(this).find('.trasera').css('opacity', '0');
+            }
+        );
+    } else {
+        $(this).find('.imagen-hover').off('mouseenter mouseleave');
+    }
+});

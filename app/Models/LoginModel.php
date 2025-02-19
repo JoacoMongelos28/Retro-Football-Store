@@ -3,19 +3,26 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
 
 class LoginModel extends Model
 {
     protected $table = 'usuario';
-    public $timestamps = false;
+    public $timestamp = false;
 
     public function buscarUsuario($usuario, $contraseña)
     {
-        return $this->where('usuario', $usuario)->where('contraseña', $contraseña)->first();
+        $usuarioObtenido = $this->where('usuario', $usuario)->first();
+
+        if (!$usuarioObtenido || !Hash::check($contraseña, $usuarioObtenido->contraseña)) {
+            return null;
+        }
+
+        return $usuarioObtenido;
     }
 
     public function obtenerUsuarioPorId($id)
     {
-        return $this->where('id', $id)->first();
+        return $this->find($id);
     }
 }

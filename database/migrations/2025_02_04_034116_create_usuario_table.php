@@ -20,8 +20,8 @@ return new class extends Migration
         Schema::create('usuario', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('usuario');
-            $table->string('email');
+            $table->string('usuario')->unique();
+            $table->string('email')->unique();
             $table->string('contraseña');
             $table->unsignedBigInteger('tipo_usuario');
             $table->foreign('tipo_usuario')->references('id')->on('tipo_usuario')->onDelete('cascade')->onUpdate('cascade');

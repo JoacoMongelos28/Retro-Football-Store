@@ -10,7 +10,7 @@ use App\Models\MercadoPagoModel;
 use App\Models\HomeModel;
 use App\Models\LoginModel;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
+use Exception;
 
 class CarritoController extends Controller
 {
@@ -31,45 +31,70 @@ class CarritoController extends Controller
 
     public function agregarAlCarrito(Request $request)
     {
-        $idUsuario = session('usuarioId');
+        try {
+            $idUsuario = session('usuarioId');
 
-        if (isset($idUsuario) && is_int($idUsuario)) {
-
-            $carritoObtenido = $this->carritoModel->crearCarrito($idUsuario);
-
-            $talle = $request->input('talle');
-            $cantidad = $request->input('cantidad');
+            if (empty($idUsuario) || !is_int($idUsuario) || $idUsuario <= 0) {
+                return response()->json([
+                    'error' => 'Debe iniciar sesión para agregar productos al carrito',
+                    'redirect' => $request->input('url')
+                ], 401);
+            }
 
             $camiseta = $this->homeModel->obtenerCamisetaPorId($request->input('id'));
+            $talle = $request->input('talle');
+            $cantidad = $request->input('cantidad');
             $stockDisponible = $camiseta ? $camiseta->{$talle} : 0;
 
             $validator = Validator::make($request->all(), [
                 'talle' => 'required',
-                'cantidad' => 'required|numeric|min:1|lte:' . $stockDisponible,
+                'cantidad' => 'required|numeric|min:1',
             ], [
-                'talle.required' => 'Debe seleccionar un talle antes de agregar al carrito.',
+                'talle.required' => 'Debe seleccionar un talle',
                 'cantidad.required' => 'Debe ingresar una cantidad.',
                 'cantidad.numeric' => 'La cantidad debe ser un número.',
                 'cantidad.min' => 'Debe agregar al menos una unidad.',
-                'cantidad.lte' => $stockDisponible > 0 
-                    ? 'Solo hay ' . $stockDisponible . ' camisetas disponibles en el talle seleccionado.'
-                    : 'No hay stock disponible para el talle seleccionado.',
             ]);
+
+            $validator->after(function ($validator) use ($cantidad, $stockDisponible) {
+                if ($cantidad > $stockDisponible) {
+                    $validator->errors()->add('cantidad', 'Solo hay ' . $stockDisponible . ' camisetas disponibles en el talle seleccionado.');
+                }
+            });
 
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()->first()], 400);
             }
 
-            $camisetaId = $request->input('id');
+            $carritoObtenido = $this->carritoModel->crearCarrito($idUsuario);
 
-            $carritoObtenido = $this->carritoProductoModel->agregarCamisetasAlCarrito($carritoObtenido->id, $camisetaId, $cantidad, $talle);
+            $productoEnCarrito = $this->carritoProductoModel->obtenerProductoEnCarrito($carritoObtenido->id, $camiseta->id);
 
-            $carritoJoineado = $this->carritoProductoModel->joinearCarrito($carritoObtenido);
+            if ($productoEnCarrito) {
+                $nuevaCantidad = $productoEnCarrito->cantidad + $cantidad;
+                if ($nuevaCantidad > $stockDisponible) {
+                    return response()->json([
+                        'error' => 'No puedes agregar más unidades de las disponibles en stock.'
+                    ], 400);
+                }
+
+                $productoEnCarrito->cantidad = $nuevaCantidad;
+                $carritoObtenido = $this->carritoProductoModel->agregarCamisetasExisatenteAlCarrito($camiseta->id, $carritoObtenido->id, $nuevaCantidad);
+            } else {
+                $carritoObtenido = $this->carritoProductoModel->agregarCamisetasAlCarrito(
+                    $carritoObtenido->id,
+                    $camiseta->id,
+                    $cantidad,
+                    $talle
+                );
+            }
+
+            $carritoFinal = $this->carritoProductoModel->obtenerPrecioTotalDeLosProductosEnElCarrito($carritoObtenido);
 
             $total = 0;
             $cantidadTotal = 0;
 
-            foreach ($carritoJoineado as $camiseta) {
+            foreach ($carritoFinal as $camiseta) {
                 $total += $camiseta->total;
                 $cantidadTotal += $camiseta->cantidad;
             }
@@ -81,154 +106,238 @@ class CarritoController extends Controller
                     'total' => $total
                 ],
             ]);
+        } catch (Exception $e) {
+            Log::error('Error al agregar al carrito: ' . $e->getMessage());
+            return response()->json(['error' => 'Ocurrió un problema al procesar la solicitud.'], 500);
         }
-
-        return response()->json([
-            'error' => 'Debe iniciar sesión para agregar productos al carrito',
-            'redirect' => $request->input('url')
-        ], 401);
     }
 
     public function mostrarCarrito()
     {
-        if (!session('usuarioId')) {
-            return redirect('login');
-        }
+        try {
+            if (!session('usuarioId')) {
+                return redirect('login');
+            }
 
-        $idUsuario = session('usuarioId');
-        $carritoObtenido = $this->carritoModel->obtenerCarrito($idUsuario);
-        $carritoJoineado = $this->carritoProductoModel->obtenerCamisetasDelCarrito($carritoObtenido);
-        $data['carrito'] = $carritoJoineado;
-        return view('Carrito', $data);
+            $idUsuario = session('usuarioId');
+            $carritoObtenido = $this->carritoModel->obtenerCarritoDelUsuario($idUsuario);
+
+            if (!$carritoObtenido) {
+                return redirect('home')->with('error', 'No se pudo obtener el carrito.');
+            }
+
+            $carritoJoineado = $this->carritoProductoModel->obtenerCamisetasDelCarrito($carritoObtenido);
+
+            if (!$carritoJoineado) {
+                return redirect('home')->with('error', 'No se encontraron productos en el carrito.');
+            }
+
+            $data['carrito'] = $carritoJoineado;
+
+            return view('Carrito', $data);
+        } catch (Exception $e) {
+            Log::error("Error al mostrar el carrito: " . $e->getMessage());
+            return redirect('carrito')->with('error', 'Hubo un problema al cargar el carrito.');
+        }
     }
 
     public function eliminarCamisetaDelCarrito(Request $request)
     {
-        $idUsuario = session('usuarioId');
-        $idCamiseta = $request->input('id');
-
-        $carrito = $this->carritoModel->obtenerCarritoJoineado($idUsuario, $idCamiseta);
-
-        $resultado = $this->carritoProductoModel->eliminarCamisetaDelCarrito($carrito->camiseta_id, $carrito->id);
-
-        if ($resultado) {
-            $carritoRestante = $this->carritoProductoModel->obtenerProductosDelCarrito($carrito->id);
-
-            if ($carritoRestante->isEmpty()) {
-                return response()->json([
-                    'mensaje' => 'Producto eliminado del carrito',
-                    'cantidadTotal' => 0,
-                    'total' => 0
-                ]);
-            } else {
-                $nuevosValores = $this->carritoProductoModel->actualizarTotalYCantidad($carrito->id);
-
-                $totalCantidad = 0;
-                $totalHeader = 0;
-
-                foreach ($nuevosValores as $camiseta) {
-                    $totalCantidad += $camiseta->cantidad;
-                    $totalHeader += $camiseta->total;
-                }
-
-                return response()->json([
-                    'mensaje' => 'Producto eliminado del carrito',
-                    'cantidadTotal' => $totalCantidad,
-                    'total' => $totalHeader
-                ]);
+        try {
+            if (!session('usuarioId')) {
+                return redirect('login');
             }
-        }
 
-        return response()->json(['mensaje' => 'No se pudo eliminar el producto del carrito']);
+            $idUsuario = session('usuarioId');
+            $idCamiseta = $request->input('id');
+
+            $carrito = $this->carritoModel->obtenerCamisetaDelCarritoPorSuId($idUsuario, $idCamiseta);
+
+            if (!$carrito) {
+                return response()->json(['error' => 'Producto no encontrado en el carrito'], 404);
+            }
+
+            $resultado = $this->carritoProductoModel->eliminarCamisetaDelCarrito($carrito->camiseta_id, $carrito->id);
+
+            if ($resultado) {
+                $carritoRestante = $this->carritoProductoModel->obtenerProductosDelCarrito($carrito->id);
+
+                if ($carritoRestante->isEmpty()) {
+                    return response()->json([
+                        'mensaje' => 'Producto eliminado del carrito',
+                        'cantidadTotal' => 0,
+                        'total' => 0
+                    ]);
+                } else {
+                    $nuevosValores = $this->carritoProductoModel->actualizarTotalYCantidad($carrito->id);
+
+                    $totalCantidad = 0;
+                    $totalHeader = 0;
+
+                    foreach ($nuevosValores as $camiseta) {
+                        $totalCantidad += $camiseta->cantidad;
+                        $totalHeader += $camiseta->total;
+                    }
+
+                    return response()->json([
+                        'mensaje' => 'Producto eliminado del carrito',
+                        'cantidadTotal' => $totalCantidad,
+                        'total' => $totalHeader
+                    ]);
+                }
+            }
+
+            return response()->json(['mensaje' => 'No se pudo eliminar el producto del carrito'], 500);
+        } catch (Exception $e) {
+            Log::error('Error al mostrar el carrito: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Hubo un problema al procesar la solicitud.',
+                'detalle' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function actualizarCantidad(Request $request)
     {
-        $idCamiseta = $request->input('id');
-        $accion = $request->input('accion');
+        try {
+            if (!session('usuarioId')) {
+                return redirect('login');
+            }
 
-        $carritoProducto = $this->carritoProductoModel->obtenerCamisetaPorId($idCamiseta);
+            $idCamiseta = $request->input('id');
+            $accion = $request->input('accion');
 
-        if (!$carritoProducto) {
-            return response()->json(['success' => false, 'message' => 'Producto no encontrado']);
-        }
+            $carritoConCamiseta = $this->carritoProductoModel->obtenerCamisetaPorId($idCamiseta);
 
-        $stockDisponible = $request->input('stock');
-        $nuevaCantidad = $carritoProducto->cantidad + $accion;
+            if (!$carritoConCamiseta) {
+                return response()->json(['success' => false, 'message' => 'Producto no encontrado']);
+            }
 
-        if ($nuevaCantidad < 1) {
-            $nuevaCantidad = 1;
-        } elseif ($nuevaCantidad > $stockDisponible) {
+            $stockDisponible = $request->input('stock');
+            $nuevaCantidad = $carritoConCamiseta->cantidad + $accion;
+
+            if ($nuevaCantidad < 1) {
+                $nuevaCantidad = 1;
+            } else if ($nuevaCantidad > $stockDisponible) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No puedes agregar más unidades de las disponibles en stock.'
+                ]);
+            }
+
+            $carritoConCamiseta->cantidad = max(1, $carritoConCamiseta->cantidad);
+            $carritoConCamiseta->cantidad = $nuevaCantidad;
+            $carritoConCamiseta->save();
+
+            $carritoJoineado = $this->carritoProductoModel->obtenerPrecioTotalDeLosProductosEnElCarrito($carritoConCamiseta);
+
+            $totalCantidad = $carritoJoineado->where('id', $idCamiseta)->sum('cantidad');
+            $total = $carritoJoineado->where('id', $idCamiseta)->sum('total');
+
+            $totalCantidadHeader = 0;
+            $totalHeader = 0;
+
+            foreach ($carritoJoineado as $producto) {
+                $totalCantidadHeader += $producto->cantidad;
+                $totalHeader += $producto->total;
+            }
+
+            return response()->json([
+                'success' => true,
+                'nuevaCantidad' => $totalCantidad,
+                'nuevoTotal' => number_format($total, 2),
+                'totalCantidadHeader' => $totalCantidadHeader,
+                'totalHeader' => number_format($totalHeader, 2)
+            ]);
+        } catch (\Exception $e) {
+            // Manejo del error
             return response()->json([
                 'success' => false,
-                'message' => 'No puedes agregar más unidades de las disponibles en stock.'
+                'message' => 'Hubo un error al actualizar la cantidad del producto.',
+                'error' => $e->getMessage()
             ]);
         }
-
-        $carritoProducto->cantidad = max(1, $carritoProducto->cantidad);
-        $carritoProducto->cantidad = $nuevaCantidad;
-        $carritoProducto->save();
-
-        $carritoJoineado = $this->carritoProductoModel->joinearCarrito($carritoProducto);
-
-        $totalCantidad = $carritoJoineado->where('id', $idCamiseta)->sum('cantidad');
-        $total = $carritoJoineado->where('id', $idCamiseta)->sum('total');
-
-        $totalCantidadHeader = 0;
-        $totalHeader = 0;
-
-        foreach ($carritoJoineado as $producto) {
-            $totalCantidadHeader += $producto->cantidad;
-            $totalHeader += $producto->total;
-        }
-
-        return response()->json([
-            'success' => true,
-            'nuevaCantidad' => $totalCantidad,
-            'nuevoTotal' => number_format($total, 2),
-            'totalCantidadHeader' => $totalCantidadHeader,
-            'totalHeader' => number_format($totalHeader, 2)
-        ]);
-
-        return response()->json(['success' => false]);
     }
+
 
     public function procesarPago()
     {
-        $usuarioId = session('usuarioId');
+        try {
+            if (!session('usuarioId')) {
+                return redirect('login');
+            }
 
-        if (empty($usuarioId) || !is_numeric($usuarioId) || $usuarioId <= 0) {
-            return redirect('login');
+            $usuarioId = session('usuarioId');
+            $usuario = $this->loginModel->obtenerUsuarioPorId($usuarioId);
+
+            if (!$usuario) {
+                return redirect('login')->with('error', 'Usuario no encontrado.');
+            }
+
+            $carrito = $this->carritoModel->obtenerCarritoDelUsuario($usuarioId);
+
+            if (!$carrito) {
+                return redirect('carrito')->with('error', 'Carrito no encontrado.');
+            }
+
+            $carritoConProductos = $this->carritoModel->obtenerProductosDelCarrito($carrito->id);
+
+            if ($carritoConProductos->isEmpty()) {
+                return redirect('carrito')->with('error', 'No hay productos en el carrito');
+            }
+
+            $carritoFinal = $this->carritoProductoModel->obtenerPrecioTotalDeLosProductosEnElCarrito($carritoConProductos->first());
+
+            $total = 0;
+
+            foreach ($carritoFinal as $camiseta) {
+                $total += $camiseta->total;
+            }
+
+            $url = $this->mercadoPagoModel->pagarCamiseta($total, $usuarioId);
+            return redirect($url);
+        } catch (Exception $e) {
+            Log::error('Error al procesar el pago: ' . $e->getMessage());
+            return redirect('carrito')->with('error', 'Hubo un problema al procesar el pago: ' . $e->getMessage());
         }
-
-        $carrito = $this->carritoModel->obtenerCarrito($usuarioId);
-        $carritoJoineado = $this->carritoModel->joinearCarritoPorSuId($carrito->id);
-        $carritoFinal = $this->carritoProductoModel->joinearCarrito($carritoJoineado->first());
-
-        $total = 0;
-
-        foreach ($carritoFinal as $camiseta) {
-            $total += $camiseta->total;
-        }
-
-        $url = $this->mercadoPagoModel->pagarCamiseta($total, $usuarioId);
-        return redirect($url);
     }
 
     public function pagoExitoso()
     {
-        $usuarioId = session('usuarioId');
-        $usuario = $this->loginModel->obtenerUsuarioPorId($usuarioId);
-        $carrito = $this->carritoModel->obtenerCarrito($usuarioId);
-        $carritoJoineado = $this->carritoModel->joinearCarritoPorSuId($carrito->id);
-        $carritoFinal = $this->carritoProductoModel->obtenerCamisetasAEliminar($carritoJoineado->first());
+        try {
+            if (!session('usuarioId')) {
+                return redirect('login');
+            }
 
-        if (!$carritoFinal->isEmpty()) {
+            $usuarioId = session('usuarioId');
+            $usuario = $this->loginModel->obtenerUsuarioPorId($usuarioId);
+
+            if (!$usuario) {
+                return redirect('login')->with('error', 'Usuario no encontrado.');
+            }
+
+            $carrito = $this->carritoModel->obtenerCarritoDelUsuario($usuarioId);
+
+            if (!$carrito) {
+                return redirect('carrito')->with('error', 'Carrito no encontrado.');
+            }
+
+            $carritoJoineado = $this->carritoModel->obtenerProductosDelCarrito($carrito->id);
+
+            if ($carritoJoineado->isEmpty()) {
+                return redirect('carrito')->with('error', 'No hay productos en el carrito.');
+            }
+
+            $carritoFinal = $this->carritoProductoModel->obtenerCamisetasAEliminar($carritoJoineado->first());
+
             $this->homeModel->actualizarStock($carritoFinal);
             $this->homeModel->enviarMail($carritoFinal, $usuario->email);
             $this->carritoModel->eliminarCarritoPorIdUsuario($usuarioId);
-        }
 
-        return redirect('carrito')->with('exitoso', 'Pago exitoso, te enviamos un mail con los detalles de tu compra.');
+            return redirect('carrito')->with('exitoso', 'Pago exitoso, te enviamos un mail con los detalles de tu compra.');
+        } catch (Exception $e) {
+            Log::error('Error al pagar el producto: ' . $e->getMessage());
+            return redirect('carrito')->with('error', 'Hubo un problema al procesar el pago exitoso: ' . $e->getMessage());
+        }
     }
 }

@@ -23,7 +23,7 @@ class CarritoModel extends Model
         return $carrito;
     }
 
-    public function obtenerCarrito($idUsuario)
+    public function obtenerCarritoDelUsuario($idUsuario)
     {
         $carrito = CarritoModel::where('usuario_id', $idUsuario)->first();
 
@@ -34,9 +34,9 @@ class CarritoModel extends Model
         return $carrito;
     }
 
-    public function obtenerCarritoJoineado($idUsuario, $idCamiseta)
+    public function obtenerCamisetaDelCarritoPorSuId($idUsuario, $idCamiseta)
     {
-        $carrito = $this->obtenerCarrito($idUsuario);
+        $carrito = $this->obtenerCarritoDelUsuario($idUsuario);
 
         $carritoConProductos = CarritoModel::join('carrito_camiseta', 'carrito.id', '=', 'carrito_camiseta.carrito_id')
             ->select('carrito_camiseta.camiseta_id',
@@ -48,7 +48,7 @@ class CarritoModel extends Model
         return $carritoConProductos;
     }
 
-    public function joinearCarritoPorSuId($idCarrito)
+    public function obtenerProductosDelCarrito($idCarrito)
     {
         $carritoConProductos = CarritoModel::join('carrito_camiseta', 'carrito.id', '=', 'carrito_camiseta.carrito_id')
             ->select('carrito_camiseta.camiseta_id',

@@ -9,10 +9,9 @@
         <div>
             <h2 class="titulo-nueva-camiseta">Agregar nueva camiseta</h2>
         </div>
-
         <div>
             @if (session('error'))
-                <p>
+                <p class="error-message">
                     {{ session('error') }}
                 </p>
             @endif
@@ -21,7 +20,7 @@
         <div>
             <form action="/admin/agregarCamiseta" method="post" enctype="multipart/form-data">
                 @csrf
-                <div>
+                <div class="form-field">
                     <label for="nombre">Nombre</label>
                     <input type="text" name="nombre" id="nombre" placeholder="Nombre de la camiseta"
                         value="{{ old('nombre') }}">
@@ -30,7 +29,7 @@
                     @enderror
                 </div>
 
-                <div>
+                <div class="form-field">
                     <label for="descripcion">Descripción</label>
                     <input type="text" name="descripcion" id="descripcion" placeholder="Descripción"
                         value="{{ old('descripcion') }}">
@@ -39,7 +38,7 @@
                     @enderror
                 </div>
 
-                <div>
+                <div class="form-field">
                     <label for="precio">Precio</label>
                     <input type="text" name="precio" id="precio" placeholder="Precio de la camiseta"
                         value="{{ old('precio') }}">
@@ -48,7 +47,7 @@
                     @enderror
                 </div>
 
-                <div>
+                <div class="form-field">
                     <label for="imagen">Imagen</label>
                     <input type="file" name="imagen" id="imagen" accept="image/*">
                     @error('imagen')
@@ -56,15 +55,15 @@
                     @enderror
                 </div>
 
-                <div>
-                    <label for="imagen_trasera">Imagen</label>
+                <div class="form-field">
+                    <label for="imagen_trasera">Imagen trasera</label>
                     <input type="file" name="imagen_trasera" id="imagen_trasera" accept="image/*">
                     @error('imagen_trasera')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
-                <div>
+                <div class="form-field">
                     <label for="estado">Estado</label>
                     <select name="estado" id="estado">
                         <option value="1" {{ old('estado') == 1 ? 'selected' : '' }}>Destacado</option>
@@ -75,59 +74,56 @@
                     @enderror
                 </div>
 
-                <label>Selecciona los talles disponibles:</label>
-                <div>
-                    <input type="checkbox" id="xs" name="talles[]" value="XS" onclick="habilitarInput()">
-                    <label for="xs">XS</label>
-                    <input type="number" name="cantidadXS" id="cantidadXS" placeholder="Cantidad XS"
-                        value="{{ old('cantidadXS') }}" style="display: none;">
+                <div class="form-field">
+                    <label>Selecciona los talles disponibles:</label>
+                    <div class="talles-container">
+                        <input type="checkbox" id="xs" name="talles[]" value="XS" onclick="habilitarInput()">
+                        <label for="xs">XS</label>
+                        <input type="number" name="cantidadXS" id="cantidadXS" placeholder="Cantidad XS"
+                            value="{{ old('cantidadXS') }}" class="input-cantidad">
 
-                    <input type="checkbox" id="s" name="talles[]" value="S" onclick="habilitarInput()">
-                    <label for="s">S</label>
-                    <input type="number" name="cantidadS" id="cantidadS" placeholder="Cantidad S"
-                        value="{{ old('cantidadS') }}" style="display: none;">
+                        <input type="checkbox" id="s" name="talles[]" value="S" onclick="habilitarInput()">
+                        <label for="s">S</label>
+                        <input type="number" name="cantidadS" id="cantidadS" placeholder="Cantidad S"
+                            value="{{ old('cantidadS') }}" class="input-cantidad">
 
-                    <input type="checkbox" id="m" name="talles[]" value="M" onclick="habilitarInput()">
-                    <label for="m">M</label>
-                    <input type="number" name="cantidadM" id="cantidadM" placeholder="Cantidad M"
-                        value="{{ old('cantidadM') }}" style="display: none;">
+                        <input type="checkbox" id="m" name="talles[]" value="M" onclick="habilitarInput()">
+                        <label for="m">M</label>
+                        <input type="number" name="cantidadM" id="cantidadM" placeholder="Cantidad M"
+                            value="{{ old('cantidadM') }}" class="input-cantidad">
 
-                    <input type="checkbox" id="l" name="talles[]" value="L" onclick="habilitarInput()">
-                    <label for="l">L</label>
-                    <input type="number" name="cantidadL" id="cantidadL" placeholder="Cantidad L"
-                        value="{{ old('cantidadL') }}" style="display: none;">
+                        <input type="checkbox" id="l" name="talles[]" value="L" onclick="habilitarInput()">
+                        <label for="l">L</label>
+                        <input type="number" name="cantidadL" id="cantidadL" placeholder="Cantidad L"
+                            value="{{ old('cantidadL') }}" class="input-cantidad">
 
-                    <input type="checkbox" id="xl" name="talles[]" value="XL" onclick="habilitarInput()">
-                    <label for="xl">XL</label>
-                    <input type="number" name="cantidadXL" id="cantidadXL" placeholder="Cantidad XL"
-                        value="{{ old('cantidadXL') }}" style="display: none;">
+                        <input type="checkbox" id="xl" name="talles[]" value="XL"
+                            onclick="habilitarInput()">
+                        <label for="xl">XL</label>
+                        <input type="number" name="cantidadXL" id="cantidadXL" placeholder="Cantidad XL"
+                            value="{{ old('cantidadXL') }}" class="input-cantidad">
 
-                    <input type="checkbox" id="xxl" name="talles[]" value="XXL" onclick="habilitarInput()">
-                    <label for="xxl">XXL</label>
-                    <input type="number" name="cantidadXXL" id="cantidadXXL" placeholder="Cantidad XXL"
-                        value="{{ old('cantidadXXL') }}" style="display: none;">
+                        <input type="checkbox" id="xxl" name="talles[]" value="XXL"
+                            onclick="habilitarInput()">
+                        <label for="xxl">XXL</label>
+                        <input type="number" name="cantidadXXL" id="cantidadXXL" placeholder="Cantidad XXL"
+                            value="{{ old('cantidadXXL') }}" class="input-cantidad">
+                    </div>
                 </div>
 
-                <button type="submit">Agregar camiseta</button>
+                <div class="contenedor-boton-agregar">
+                    <div>
+                        <a class="contenedor-btn-volver" href="/admin">Volver</a>
+                    </div>
+                    <button type="submit">Agregar camiseta</button>
+                </div>
             </form>
         </div>
     </div>
 </main>
 
-<script>
-    function habilitarInput() {
-    ['xs', 's', 'm', 'l', 'xl', 'xxl'].forEach(talle => {
-        let checkbox = document.getElementById(talle);
-        let cantidadInput = document.getElementById(`cantidad${talle.toUpperCase()}`);
-
-        if (checkbox.checked) {
-            cantidadInput.style.display = 'block';
-        } else {
-            cantidadInput.style.display = 'none';
-            cantidadInput.value = '';
-        }
-    });
-}
-</script>
-
-<x-footer></x-footer>
+<x-footer>
+    @push('scripts')
+        <script src="{{ asset('js/agregarCamiseta.js') }}"></script>
+    @endpush
+</x-footer>

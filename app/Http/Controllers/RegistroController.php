@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\RegistroModel;
+use App\Http\Requests\RegistroRequest;
 
 class RegistroController extends Controller
 {
@@ -18,7 +18,7 @@ class RegistroController extends Controller
         return view('registro');
     }
 
-    public function registrarUsuario(Request $request) {
+    public function registrarUsuario(RegistroRequest $request) {
         $nombre = $request->input('nombre');
         $usuario = $request->input('usuario');
         $email = $request->input('email');
