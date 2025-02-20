@@ -46,9 +46,10 @@ Technologies:<br>
 > 8.	Import the 'camiseta.sql' file into phpMyAdmin, which is located in the 'sql' folder within the project.
 > 9.	Register as a user and enjoy the page.
 > 10.	If you want to pay for the football shirts, you must log in and pay using the following Mercado Pago account<br><br>
-> User: TESTUSER2053005099<br>
-> Password: FC981613#be14#4f1f#<br>
-> Verification code: 810057<br><br>
+    User: TESTUSER2053005099<br>
+    Password: FC981613#be14#4f1f#<br>
+    Verification code: 810057<br><br>
 > 11.   If you want to log in as an administrator, these are the credentials:<br><br>
-Username: admin<br> Password: admin<br>
+    Username: admin<br>
+    Password: admin<br><br>
 > 12.   Enjoy the app!
