@@ -22,14 +22,5 @@ class UsuarioSeeder extends Seeder
         $usuarioAdmin->tipo_usuario = 1;
 
         $usuarioAdmin->save();
-
-        $usuarioAdmin = new RegistroModel();
-        $usuarioAdmin->nombre = 'Joaquin Mongelos';
-        $usuarioAdmin->usuario = 'Joacoo.pa';
-        $usuarioAdmin->email = 'joaquinmongelos75@gmail.com'; 
-        $usuarioAdmin->contraseña = Hash::make('123');
-        $usuarioAdmin->tipo_usuario = 2;
-
-        $usuarioAdmin->save();
     }
 }
