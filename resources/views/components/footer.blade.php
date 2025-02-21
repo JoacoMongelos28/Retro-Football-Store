@@ -5,7 +5,8 @@
         </div>
         <div class="contenedor-principal-redes">
             <div class="contenedor-redes">
-                <a href="/pdf/CV.pdf" target="_BLANK"class="cv">CV</a>
+                <a class="cv" href="https://joaquinmongelos.netlify.app/" target="_blank">Mi Portfolio</a>
+                <a href="/pdf/Joaquin Mongelos - CV.pdf" target="_BLANK" class="cv">CV</a>
                 <a class="github" href="https://github.com/JoacoMongelos28" target="_blank"><i
                         class="fa-brands fa-square-github"></i></a>
                 <a class="linkedin" href="https://www.linkedin.com/in/joaquinmongelos/" target="_blank"><i
