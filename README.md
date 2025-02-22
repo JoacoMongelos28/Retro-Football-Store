@@ -45,7 +45,7 @@ Technologies:<br>
     DB_PASSWORD=your_password
 <br><br>
 > 7.    In the same file (.env), paste this code.<br><br>
-    MERCADOPAGO_PUBLIC_KEY=APP_USR-705806417372706-011002-1fe4d4af65b4f79f238b03a2c2755cf6-2201985025
+    MERCADOPAGO_PUBLIC_KEY=APP_USR-705806417372706-011002-1fe4d4af65b4f79f238b03a2c2755cf6-2201985025    
     MERCADOPAGO_ACCESS_TOKEN=TEST-2591301662628250-112013-bef180cd58f4d64d50d056542d3f0d85-151386142
 <br><br>
 > 8.    If you want to receive an email, modify the .env file with the following code using your MailTrap.io credentials.<br><br>
