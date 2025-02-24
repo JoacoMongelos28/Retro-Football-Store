@@ -150,13 +150,15 @@ class HomeModel extends Model
 
         $filtrosValidos = [
             'todos' => fn($query) => $query,
-            'precio-menor-mayor' => fn($query) => $query->orderBy('precio', 'asc'),
-            'precio-mayor-menor' => fn($query) => $query->orderBy('precio', 'desc'),
+            'precioMenorMayor' => fn($query) => $query->orderBy('precio', 'asc'),
+            'precioMayorMenor' => fn($query) => $query->orderBy('precio', 'desc'),
             'destacados' => fn($query) => $query->where('estado', 1),
             'ofertas' => fn($query) => $query->where('estado', 2),
         ];
 
-        $camisetas = $filtrosValidos[$filtro] ?? fn($query) => $query->where('nombre', 'like', "%$filtro%");
+        $filtrado = str_replace('-', ' ', $filtro);
+
+        $camisetas = $filtrosValidos[$filtrado] ?? fn($query) => $query->where('nombre', 'like', "%$filtrado%");
 
         $camisetas = $camisetas($query)->paginate(12);
 

@@ -125,7 +125,7 @@ class HomeController extends Controller
             session(['filtro' => $filtro]);
 
             if (session('filtro') != null) {
-                $data['filtro'] = session('filtro');
+                $data['filtro'] = str_replace('-', ' ', $filtro);
                 $data['camisetasFiltradas'] = $this->homeModel->obtenerCamisetasPorFiltro($filtro);
                 $data['camisetas'] = $data['camisetasFiltradas']->isEmpty() ? $this->homeModel->obtenerTodasLasCamisetas() : $data['camisetasFiltradas'];
             } else {

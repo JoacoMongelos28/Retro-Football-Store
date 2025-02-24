@@ -32,8 +32,7 @@ img {
 }
 
 .camisetas-oferta {
-    width: 200px;
-    height: 200px !important;
+    height: 150px !important;
 }
 
 .lupa {
@@ -73,7 +72,7 @@ img {
 .imagen-hover img {
     display: block;
     transition: opacity 0.3s ease-in-out;
-    height: 200px !important;
+    height: 150px !important;
 }
 
 .imagen-hover .trasera {
