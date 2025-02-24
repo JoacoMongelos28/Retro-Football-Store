@@ -7,7 +7,7 @@
 <main>
     <div class="contenedor-principal">
         <div>
-            @if ($filtro && !in_array($filtro, ['destacados', 'ofertas', 'precio-menor-mayor', 'precio-mayor-menor', 'todos']))
+            @if ($filtro && !in_array($filtro, ['destacados', 'ofertas', 'precioMenorMayor', 'precioMayorMenor', 'todos']))
                 <h2 class="text-3xl resultado">Resultados para: <strong>{{ $filtro }}</strong></h2>
             @else
                 <h2 class="camisetas-txt text-3xl">Todas las Camisetas</h2>
@@ -20,12 +20,12 @@
 
         <div class="contenedor-filtro">
             <form method="get" action="" class="form-filtro" id="formFiltro">
-                <select id="filtro" class="filtro-select" name="filtro" onchange="filtrarCamisetas()">
+                <select id="filtro" class="filtro-select" name="filtro">
                     <option value="todos" {{ $filtro == 'todos' ? 'selected' : '' }}>Todos</option>
                     <option value="destacados" {{ $filtro == 'destacados' ? 'selected' : '' }}>Destacados</option>
                     <option value="ofertas" {{ $filtro == 'ofertas' ? 'selected' : '' }}>Ofertas</option>
-                    <option value="precio-menor-mayor" {{ $filtro == 'precio-menor-mayor' ? 'selected' : '' }}>Precio Menor a Mayor</option>
-                    <option value="precio-mayor-menor" {{ $filtro == 'precio-mayor-menor' ? 'selected' : '' }}>Precio Mayor a Menor</option>
+                    <option value="precioMenorMayor" {{ $filtro == 'precioMenorMayor' ? 'selected' : '' }}>Precio Menor a Mayor</option>
+                    <option value="precioMayorMenor" {{ $filtro == 'precioMayorMenor' ? 'selected' : '' }}>Precio Mayor a Menor</option>
                 </select>
             </form>
         </div>
