@@ -89,6 +89,6 @@ Retro Football Store project is a web application designed for retro football je
 > ### 15.   Enjoy the app!
 
 ## 📫 Contact me
-• 🌐 <a href="https://joaquinmongelos.netlify.app/" target="_blank">Portfolio</a><br>
-• 💼 <a href="https://www.linkedin.com/in/joaquinmongelos" target="_blank">LinkedIn - Joaquin Mongelos</a><br>
+• 🌐 [Portfolio](https://joaquinmongelos.netlify.app/)<br>
+• 💼 [LinkedIn - Joaquin Mongelos](https://www.linkedin.com/in/joaquinmongelos)<br>
 • 📧 Email: joaquinmongelos75@gmail.com
